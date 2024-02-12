@@ -2,6 +2,7 @@ package com.example.appblockr;
 
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -60,21 +61,21 @@ public class MainActivity extends AppCompatActivity {
         setTitle(" Locked Apps");
         setTheme(R.style.Theme_Appsift);
         setContentView(R.layout.activity_main);
-        //BackgroundManager.getInstance().init(this).startService();
-        //BackgroundManager.getInstance().init(this).startAlarmManager();
+     //   BackgroundManager.getInstance().init(this).startService();
+       // BackgroundManager.getInstance().init(this).startAlarmManager();
         addIconToBar();
         progressDialog = new ProgressDialog(this);
         emptyLockListInfo = findViewById(R.id.emptyLockListInfo);
         allAppsBtn = findViewById(R.id.all_apps_button_img);
         enableOverlayAccess = findViewById(R.id.permissionsBoxDisplay);
         enableUsageAccess = findViewById(R.id.permissionsBoxUsage);
-        accessServiceLayout = findViewById(R.id.accessServiceBox);
+
         btnEnableOverlay = findViewById(R.id.enableStatusDisplay);
         btnEnableUsageAccess = findViewById(R.id.enableStatusUsage);
-        btnEnableAS = findViewById(R.id.enableAS);
+
         checkBoxOverlay = findViewById(R.id.checkedIconDisplay);
         checkBoxUsage = findViewById(R.id.checkedIconUsage);
-        checkedASIcon= findViewById(R.id.checkedIconAS);
+
         blockingInfoLayout = findViewById(R.id.blockingInfoLayout);
         blockingScheduleDescription = findViewById(R.id.blockingScheduleDescription);
         scheduleMode = findViewById(R.id.scheduleMode);
@@ -187,12 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         accessPermission();
                     }
                 });
-                btnEnableAS.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ASPermission();
-                    }
-                });
+
                 if (Settings.canDrawOverlays(this)) {
                     btnEnableOverlay.setVisibility(View.INVISIBLE);
                     checkBoxOverlay.setColorFilter(Color.GREEN);
@@ -201,18 +197,14 @@ public class MainActivity extends AppCompatActivity {
                     btnEnableUsageAccess.setVisibility(View.INVISIBLE);
                     checkBoxUsage.setColorFilter(Color.GREEN);
                 }
-                if (isAccessibilityServiceEnabled()) {
-                    btnEnableAS.setVisibility(View.INVISIBLE);
-                    checkedASIcon.setColorFilter(Color.GREEN);
-                }
+
             } else {
-                if(btnEnableAS.getVisibility()==View.INVISIBLE) {
+
                     enableUsageAccess.setVisibility(View.GONE);
                     enableOverlayAccess.setVisibility(View.GONE);
-                    accessServiceLayout.setVisibility(View.GONE);
                     toggleEmptyLockListInfo(this);
-                }
             }
+
         }
     }
 
@@ -335,7 +327,32 @@ public class MainActivity extends AppCompatActivity {
             Intent myIntent = new Intent(MainActivity.this, Schedule.class);
             MainActivity.this.startActivity(myIntent);
         }
+        if (id == R.id.saveLockedApp) {
+            disableAccessibilityService(this, MyAccessibilityService.class);
+            enableAccessibilityService(this, MyAccessibilityService.class);
+        }
         return super.onOptionsItemSelected(item);
+    }
+    private static void disableAccessibilityService(Context context, Class<?> serviceClass) {
+       ComponentName componentName = new ComponentName(context, serviceClass);
+        context.getPackageManager().setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+    }
+
+    private  void enableAccessibilityService(Context context, Class<?> serviceClass) {
+
+        ComponentName componentName = new ComponentName(context, serviceClass);
+        context.getPackageManager().setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+        // Open Accessibility settings to prompt the user to re-enable the service
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+       context.startActivity(intent);
+        // MyAccessibilityService.killApp(context, "com.whatsapp");
+        // serviceConnection.setMyServiceInfo(this,serviceConnection);
     }
 
 }
