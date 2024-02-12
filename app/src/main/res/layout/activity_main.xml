@@ -202,65 +202,6 @@
 
   </RelativeLayout>
 
-  <RelativeLayout
-      android:id="@+id/accessServiceBox"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:padding="16dp"
-      android:layout_marginLeft="50dp"
-      android:layout_marginRight="50dp"
-      android:layout_marginTop="175dp"
-
-      android:background="@color/blue"
-
-      >
-    <ImageView
-        android:id="@+id/checkedIconAS"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        app:srcCompat="@drawable/ic_baseline_check_24"
-        tools:ignore="VectorDrawableCompat" />
-
-    <TextView
-        android:id="@+id/enableAS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="18dp"
-        android:text="ENABLE"
-        android:textColor="@color/alertRed"
-        android:layout_centerVertical="true"
-        android:textSize="14dp"
-        app:srcCompat="@drawable/ic_launcher_background"
-        tools:ignore="VectorDrawableCompat" />
-
-    <TextView
-        android:id="@+id/permissionDescriptionAS"
-        android:textColor="@color/white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Accessbility access"
-        android:textSize="14sp"
-
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/appicon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/enableStatusUsage"
-        app:layout_constraintHorizontal_bias="0.102"
-        app:layout_constraintStart_toEndOf="@+id/appicon"
-        app:layout_constraintTop_toTopOf="parent" />
-
-  </RelativeLayout>
-
 
   <com.google.android.material.bottomnavigation.BottomNavigationView
       android:id="@+id/bottom_navigation"

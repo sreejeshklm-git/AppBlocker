@@ -1,6 +1,7 @@
 package com.example.appblockr;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appblockr.adapter.AllAppAdapter;
 import com.example.appblockr.model.AppModel;
+import com.example.appblockr.services.MyAccessibilityService;
 import com.example.appblockr.shared.SharedPrefUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -162,15 +165,50 @@ public class ShowAllApps extends AppCompatActivity {
                 return false;
             }
         });
-        MenuItem savelist = menu.findItem(R.id.action_save);
+        /*MenuItem savelist = menu.findItem(R.id.action_save);
         AppCompatButton bView = (AppCompatButton) savelist.getActionView();
         bView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(ShowAllApps.this, "Save", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
         return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_button:
+                // Perform action when the button is clicked
+               // Toast.makeText(ctx, "testing", Toast.LENGTH_SHORT).show();
+                disableAccessibilityService(this, MyAccessibilityService.class);
+                enableAccessibilityService(this, MyAccessibilityService.class);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    private static void disableAccessibilityService(Context context, Class<?> serviceClass) {
+        ComponentName componentName = new ComponentName(context, serviceClass);
+        context.getPackageManager().setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+    }
+
+    private  void enableAccessibilityService(Context context, Class<?> serviceClass) {
+
+        ComponentName componentName = new ComponentName(context, serviceClass);
+        context.getPackageManager().setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+        // Open Accessibility settings to prompt the user to re-enable the service
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        // MyAccessibilityService.killApp(context, "com.whatsapp");
+        // serviceConnection.setMyServiceInfo(this,serviceConnection);
     }
 
 }

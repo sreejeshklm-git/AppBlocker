@@ -23,32 +23,16 @@ public class MyAccessibilityService extends AccessibilityService {
     protected void onServiceConnected() {
 
         super.onServiceConnected();
-        SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-       // String  arrayAsString = preferences.getString("stringArray", null);
-        Set<String> stringSet = preferences.getStringSet("stringArray", null);
-        ArrayList<String> arrayList = new ArrayList<>();
-        info = getServiceInfo();
-       // AccessibilityServiceInfo info = getServiceInfo();
-        // your other assignments
-      //  info.packageNames = new String[]{"com.whatsapp"};
-       /* if (stringSet != null) {
-            if (stringSet != null) {
-                // Do something with the string set
-                for (String item : stringSet) {
-                    Log.e("AccessibilityService", "Item: " + item);
-                    arrayList.add(item);
-                }
-            }
-            String[] array = arrayList.toArray(new String[0]);
-            info.packageNames =array;
-        } else {
-
-        }*/
-
-//Log.e("packName",info.packageNames.toString());
-
-        // Set the modified AccessibilityServiceInfo objec
-        setServiceInfo(info);
+        SharedPrefUtil prefUtil = new SharedPrefUtil(this);
+        List<String> lockedApps = prefUtil.getLockedAppsList();
+        if(lockedApps.size()>0) {
+            String[] array = lockedApps.toArray(new String[0]);
+            Log.e("arry", array.toString());
+            info = getServiceInfo();
+             info.packageNames =array;
+            //info.packageNames = new String[]{"com.whatsapp"};
+            setServiceInfo(info);
+        }
 
     }
     public static void killApp(Context context, String packageName) {
@@ -61,10 +45,7 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         Log.e("packName b4",accessibilityEvent.getPackageName().toString());
-        SharedPrefUtil prefUtil = new SharedPrefUtil(this);
-        List<String> lockedApps = prefUtil.getLockedAppsList();
-        String[] array = lockedApps.toArray(new String[0]);
-        info.packageNames =array;
+
         if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             // Check if the user has switched to a different app
 
