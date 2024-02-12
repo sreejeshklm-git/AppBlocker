@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.protobuf.Any;
 
 import java.util.HashMap;
 
@@ -22,7 +23,7 @@ public class FireStoreManager {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void addDataToFireStoreDB(HashMap<String, Object> dataMap, String db_Path) {
+    public void addDataToFireStoreDB(HashMap<String, String> dataMap, String db_Path) {
 
         // Add a new document with a generated ID
         db.collection(db_Path)
