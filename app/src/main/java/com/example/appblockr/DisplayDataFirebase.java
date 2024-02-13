@@ -34,22 +34,7 @@ public class DisplayDataFirebase extends AppCompatActivity {
         recyclerView=findViewById(R.id.recyclerView);
         addIcon=findViewById(R.id.log_out);
 
-//        setSupportActionBar(toolbar);
-//        toolbar.setTitleTextColor(Color.WHITE);
-//        toolbar.setTitle("Application Name");
-        //this list comes from the firebase
 
-//        courseNames=new ArrayList();
-//        courseNames.add("Data Structure");
-//        courseNames.add("Android");
-//        courseNames.add("Kotlin");
-//        courseNames.add("Java");
-//        courseNames.add("Swift");
-//        courseNames.add("Python");
-//        courseNames.add("MachineLearning");
-//        courseNames.add("C++");
-//        courseNames.add("JavaScript");
-//        courseNames.add("C");
 
         addIcon.setOnClickListener(new View.OnClickListener() {
             @Override
