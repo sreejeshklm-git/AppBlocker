@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle(" Locked Apps");
         setTheme(R.style.Theme_Appsift);
         setContentView(R.layout.activity_main);
+
      //   BackgroundManager.getInstance().init(this).startService();
        // BackgroundManager.getInstance().init(this).startAlarmManager();
         addIconToBar();
