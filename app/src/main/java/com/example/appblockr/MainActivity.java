@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appblockr.adapter.LockedAppAdapter;
+import com.example.appblockr.firestore.FireStoreManager;
 import com.example.appblockr.model.AppModel;
 import com.example.appblockr.services.BackgroundManager;
 import com.example.appblockr.services.MyAccessibilityService;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     TextView btnEnableUsageAccess,btnEnableAS, btnEnableOverlay,blockingScheduleDescription,scheduleMode ;
     ImageView checkBoxOverlay, checkBoxUsage,checkedASIcon;
 
+    FireStoreManager fireStoreManager;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +64,15 @@ public class MainActivity extends AppCompatActivity {
         setTitle(" Locked Apps");
         setTheme(R.style.Theme_Appsift);
         setContentView(R.layout.activity_main);
-     //   BackgroundManager.getInstance().init(this).startService();
+
+        fireStoreManager = new FireStoreManager();
+        fireStoreManager.initFireStoreDB();
+        fireStoreManager.readDB();
+
+        //   BackgroundManager.getInstance().init(this).startService();
        // BackgroundManager.getInstance().init(this).startAlarmManager();
         addIconToBar();
+
         progressDialog = new ProgressDialog(this);
         emptyLockListInfo = findViewById(R.id.emptyLockListInfo);
         allAppsBtn = findViewById(R.id.all_apps_button_img);
