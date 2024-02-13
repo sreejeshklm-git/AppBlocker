@@ -103,21 +103,22 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="2dp"
+
         app:srcCompat="@drawable/ic_baseline_check_24"
         tools:ignore="VectorDrawableCompat" />
+
     <TextView
         android:id="@+id/enableStatusDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+
+        android:layout_marginEnd="1dp"
         android:text="ENABLE"
         android:textColor="@color/alertRed"
         android:textSize="14dp"
-                android:layout_marginEnd="16dp"
-        android:layout_marginStart="18dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         app:srcCompat="@drawable/ic_launcher_background"
         tools:ignore="VectorDrawableCompat" />
 
@@ -126,19 +127,15 @@
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Display over apps"
+          android:text="Display over apps"
         android:textSize="14sp"
 
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/appicon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/enableStatusDisplay"
-        app:layout_constraintHorizontal_bias="0.102"
+
         app:layout_constraintStart_toEndOf="@+id/appicon"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -160,8 +157,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="2dp"
         app:srcCompat="@drawable/ic_baseline_check_24"
         tools:ignore="VectorDrawableCompat" />
 
@@ -170,9 +166,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginEnd="16dp"
         android:layout_centerVertical="true"
-        android:layout_marginStart="18dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginStart="20dp"
         android:text="ENABLE"
         android:textColor="@color/alertRed"
         android:textSize="14dp"
