@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,16 +31,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appblockr.adapter.LockedAppAdapter;
 import com.example.appblockr.firestore.FireStoreManager;
+import com.example.appblockr.firestore.User;
 import com.example.appblockr.model.AppModel;
-import com.example.appblockr.services.BackgroundManager;
 import com.example.appblockr.services.MyAccessibilityService;
 import com.example.appblockr.shared.SharedPrefUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final String TAG = "MainActivity";
     static List<AppModel> lockedAppsList = new ArrayList<>();
     static Context context;
     private static final int ACCESSIBILITY_SERVICE_REQUEST = 101;
@@ -56,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView checkBoxOverlay, checkBoxUsage,checkedASIcon;
 
     FireStoreManager fireStoreManager;
+    FirebaseFirestore db;
+
+    List<User> usersList = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -66,8 +78,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         fireStoreManager = new FireStoreManager();
-        fireStoreManager.initFireStoreDB();
-        fireStoreManager.readDB();
+       db =  fireStoreManager.getFireStoreInstance();
+
+       /* ArrayList<User> users = fireStoreManager.readUserListFromDB();
+        Log.d("FireStoreManager::" , "MainAct:: "+users.size());*/
+
+        getUsersList();
+        Log.d("FireStoreManager::" , "MainAct:: "+usersList.size());
+
 
         //   BackgroundManager.getInstance().init(this).startService();
        // BackgroundManager.getInstance().init(this).startAlarmManager();
@@ -144,6 +162,29 @@ public class MainActivity extends AppCompatActivity {
         //toggle permissions box
         togglePermissionBox();
        // checkAppsFirstTimeLaunch();
+
+    }
+
+    private void getUsersList() {
+        db.collection("add_users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                User users = document.toObject(User.class);
+                                usersList.add(users);
+                                Log.d(TAG, users.getEmail());
+                                // hashMap = (Map<String, Object>) document.getData();
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                            Log.d(TAG, "Size:: " + usersList.size());
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
 
     }
 

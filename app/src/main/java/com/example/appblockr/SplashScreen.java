@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.appblockr.ui.adduser.AdduserActivity;
+import com.example.appblockr.ui.home.AdminHomeActivity;
 
 import gr.net.maroulis.library.EasySplashScreen;
 
@@ -20,7 +21,8 @@ public class SplashScreen extends AppCompatActivity {
         getSupportActionBar().hide();
         EasySplashScreen config = new EasySplashScreen(SplashScreen.this)
                 .withFullScreen()
-                .withTargetActivity(AdduserActivity.class)
+                .withTargetActivity(AdminHomeActivity.class)
+//                .withTargetActivity(AdduserActivity.class)
                 .withSplashTimeOut(2000)
                 .withBackgroundColor(Color.parseColor("#495867"))
                 .withLogo(R.mipmap.ic_launcher_foreground)
