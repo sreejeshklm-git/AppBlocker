@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions"/>
+
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -30,14 +32,17 @@
         <activity android:name=".Schedule" />
         <activity android:name=".IntroScreen" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".About" />
-        <activity android:name=".ScreenBlocker" />
-        <activity android:name=".SplashScreen">
+        <activity android:name=".About">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity android:name=".ScreenBlocker" />
+        <activity android:name=".SplashScreen">
+
         </activity>
         <activity android:name=".LockedApps" />
         <activity android:name=".ShowAllApps" />
