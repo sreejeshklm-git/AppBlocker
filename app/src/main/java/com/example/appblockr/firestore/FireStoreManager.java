@@ -2,6 +2,8 @@ package com.example.appblockr.firestore;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+
+import com.example.appblockr.shared.SharedPrefUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -16,6 +18,7 @@ import com.google.protobuf.Any;
 import java.util.HashMap;
 
 public class FireStoreManager {
+
     private final String TAG = "FireStoreManager";
     private FirebaseFirestore db;
 
@@ -50,6 +53,28 @@ public class FireStoreManager {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+    public void readDBLogin(String username,String password){
+          boolean loginSuc;
+        db.collection("add_users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String userNameDb = document.getString("user_name");
+                                String passwordDb = document.getString("password");
+                                if( username.equals(userNameDb) && password.equals(passwordDb)){
+
+                                }
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
                         } else {

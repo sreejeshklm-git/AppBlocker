@@ -25,6 +25,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appsift">
         <activity
+            android:name=".ui.adduser.AppListActivity"
+            android:exported="false" />
+         <activity
+         android:name=".ui.adduser.UserAppListActivity"
+         android:exported="false" />
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginPage"
             android:exported="false" />
         <activity android:name=".Schedule" />
@@ -54,9 +63,12 @@
             android:name=".broadcast.RestartServiceWhenStopped"
             android:enabled="true"
             android:exported="true">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </receiver>
 
         <service
@@ -69,11 +81,12 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".services.MyAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />

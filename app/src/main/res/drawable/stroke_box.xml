@@ -5,9 +5,12 @@
 
     <stroke
         android:width="2dp"
-        android:color="@android:color/darker_gray" />
+        android:color="@android:color/darker_gray"
+        />
+    <solid android:color="@color/white">
+    </solid>
 
     <corners
-        android:radius="6dp" />
+        android:radius="10dp" />
 
 </shape>
