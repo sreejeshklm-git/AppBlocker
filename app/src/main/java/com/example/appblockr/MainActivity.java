@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
     FireStoreManager fireStoreManager;
     FirebaseFirestore db;
-
     List<User> usersList = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
