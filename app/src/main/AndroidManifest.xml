@@ -27,36 +27,51 @@
         <activity
             android:name=".ui.adduser.AppListActivity"
             android:exported="false" />
-         <activity
-         android:name=".ui.adduser.UserAppListActivity"
-         android:exported="false" />
+        <activity
+            android:name=".ui.adduser.UserAppListActivity"
+            android:exported="false" />
         <activity
             android:name=".AdminActivity"
             android:exported="false" />
         <activity
             android:name=".LoginPage"
             android:exported="false" />
-        <activity android:name=".Schedule" />
         <activity
             android:name=".ui.home.AdminHomeActivity"
             android:exported="false" />
         <activity
             android:name=".ui.adduser.AdduserActivity"
             android:exported="false" />
-        <activity android:name=".Schedule" />
-        <activity android:name=".IntroScreen" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".About" />
-        <activity android:name=".ScreenBlocker" />
-        <activity android:name=".SplashScreen">
+        <activity
+            android:name=".Schedule"
+            android:exported="false" />
+        <activity
+            android:name=".IntroScreen"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".About"
+            android:exported="false" />
+        <activity
+            android:name=".ScreenBlocker"
+            android:exported="false" />
+        <activity
+            android:name=".SplashScreen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LockedApps" />
-        <activity android:name=".ShowAllApps" />
+        <activity
+            android:name=".LockedApps"
+            android:exported="false" />
+        <activity
+            android:name=".ShowAllApps"
+            android:exported="false" />
 
         <receiver
             android:name=".broadcast.ReceiverApplock"
@@ -94,7 +109,9 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
-        <service android:name=".services.ForegroundService" />
+        <service
+            android:name=".services.ForegroundService"
+            android:exported="true" />
     </application>
 
 </manifest>

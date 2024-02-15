@@ -16,19 +16,6 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//        getSupportActionBar().hide();
-//        EasySplashScreen config = new EasySplashScreen(SplashScreen.this)
-//                .withFullScreen()
-//                .withTargetActivity(MainActivity.class)
-//                .withSplashTimeOut(2000)
-//                .withBackgroundColor(Color.parseColor("#495867"))
-//                .withLogo(R.mipmap.ic_launcher_foreground)
-//                .withAfterLogoText("AppBlockr");
-//        config.getAfterLogoTextView().setTextColor(Color.WHITE);
-//
-//        View easySplashScreenView = config.create();
-//        setContentView(easySplashScreenView);
         setContentView(R.layout.splash_screen_layout);
         handler=new Handler();
         handler.postDelayed(new Runnable() {
