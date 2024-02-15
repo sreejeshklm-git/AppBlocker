@@ -38,8 +38,7 @@ public class ReceiverApplock extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("running bc"," on receive ");
-        Utils utils = new Utils(context);
+         Utils utils = new Utils(context);
         SharedPrefUtil prefUtil = new SharedPrefUtil(context);
         List<String> lockedApps = prefUtil.getLockedAppsList();
         String appRunning = utils.getLauncherTopApp();

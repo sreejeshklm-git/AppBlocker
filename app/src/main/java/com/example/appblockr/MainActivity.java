@@ -26,6 +26,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +34,8 @@ import com.example.appblockr.adapter.LockedAppAdapter;
 import com.example.appblockr.firestore.FireStoreManager;
 import com.example.appblockr.firestore.User;
 import com.example.appblockr.model.AppModel;
+import com.example.appblockr.services.BackgroundManager;
+import com.example.appblockr.services.ForegroundService;
 import com.example.appblockr.services.MyAccessibilityService;
 import com.example.appblockr.shared.SharedPrefUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -75,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
         setTitle(" Locked Apps");
         setTheme(R.style.Theme_Appsift);
         setContentView(R.layout.activity_main);
+      // BackgroundManager.getInstance().init(this).startService();
+        //BackgroundManager.getInstance().init(this).startAlarmManager();
+        ContextCompat.startForegroundService(this, new Intent(this, ForegroundService.class));
 
         fireStoreManager = new FireStoreManager();
        db =  fireStoreManager.getFireStoreInstance();
@@ -89,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         //   BackgroundManager.getInstance().init(this).startService();
        // BackgroundManager.getInstance().init(this).startAlarmManager();
         addIconToBar();
-
         progressDialog = new ProgressDialog(this);
         emptyLockListInfo = findViewById(R.id.emptyLockListInfo);
         allAppsBtn = findViewById(R.id.all_apps_button_img);
@@ -264,6 +269,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BackgroundManager.getInstance().init(this).startService();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BackgroundManager.getInstance().init(this).startService();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BackgroundManager.getInstance().init(this).startService();
+    }
+
     public void getLockedApps(Context ctx) {
         toggleEmptyLockListInfo(ctx);
         List<String> prefAppList = SharedPrefUtil.getInstance(ctx).getLockedAppsList();
@@ -376,10 +399,7 @@ public class MainActivity extends AppCompatActivity {
             Intent myIntent = new Intent(MainActivity.this, Schedule.class);
             MainActivity.this.startActivity(myIntent);
         }
-        if (id == R.id.saveLockedApp) {
-            disableAccessibilityService(this, MyAccessibilityService.class);
-            enableAccessibilityService(this, MyAccessibilityService.class);
-        }
+
         return super.onOptionsItemSelected(item);
     }
     private static void disableAccessibilityService(Context context, Class<?> serviceClass) {

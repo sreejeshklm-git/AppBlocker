@@ -179,12 +179,7 @@ public class ShowAllApps extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_button:
-                // Perform action when the button is clicked
-               // Toast.makeText(ctx, "testing", Toast.LENGTH_SHORT).show();
-                disableAccessibilityService(this, MyAccessibilityService.class);
-                enableAccessibilityService(this, MyAccessibilityService.class);
-                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
