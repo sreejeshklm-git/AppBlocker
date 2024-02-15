@@ -1,13 +1,14 @@
 package com.example.appblockr.firestore;
 
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 
+import com.example.appblockr.shared.SharedPrefUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Firebase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FireStoreManager {
+
     private final String TAG = "FireStoreManager";
     private FirebaseFirestore db;
 
@@ -54,8 +56,7 @@ public class FireStoreManager {
                 });
     }
 
-    public ArrayList<User> readUserListFromDB() {
-
+    public void readDB(){
         db.collection("add_users")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -63,18 +64,34 @@ public class FireStoreManager {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                User users = document.toObject(User.class);
-                                usersList.add(users);
-                                Log.d(TAG, users.getEmail());
-                                // hashMap = (Map<String, Object>) document.getData();
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
-                            Log.d(TAG, "Size:: " + usersList.size());
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
-        return usersList;
+    }
+    public void readDBLogin(String username,String password){
+          boolean loginSuc;
+        db.collection("add_users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String userNameDb = document.getString("user_name");
+                                String passwordDb = document.getString("password");
+                                if( username.equals(userNameDb) && password.equals(passwordDb)){
+
+                                }
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 }

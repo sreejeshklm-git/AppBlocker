@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/add_user_gradient"
+    android:layout_height="match_parent"
+    android:id="@+id/login_activity"
+    tools:context=".LoginActivity">
+    <LinearLayout
+        android:id="@+id/blockingInfoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="8dp">
+        <ImageView
+            android:id="@+id/logo_id"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/locked_icon"/>
+
+        <EditText
+            android:layout_gravity="center"
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/stroke_box"
+            android:padding="10dp"
+            android:minHeight="48dp"
+            android:hint="Email"/>
+
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/stroke_box"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:hint="Password"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="10dp"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/white"
+            android:background="@drawable/submit_button_border"
+            android:textSize="20sp"
+            android:text="Login"/>
+
+    </LinearLayout>
+</RelativeLayout>

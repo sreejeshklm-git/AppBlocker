@@ -25,6 +25,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appsift">
         <activity
+            android:name=".ui.adduser.AppListActivity"
+            android:exported="false" />
+         <activity
+         android:name=".ui.adduser.UserAppListActivity"
+         android:exported="false" />
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginPage"
+            android:exported="false" />
+        <activity android:name=".Schedule" />
+        <activity
             android:name=".ui.home.AdminHomeActivity"
             android:exported="false" />
         <activity
