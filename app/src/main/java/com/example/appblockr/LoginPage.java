@@ -1,12 +1,18 @@
 package com.example.appblockr;
 
 import static com.example.appblockr.MainActivity.context;
+import static com.example.appblockr.R.*;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,12 +43,15 @@ public class LoginPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle("Login");
-        setContentView(R.layout.activity_login_page);
-
-         prefUtil = new SharedPrefUtil(getApplicationContext());
-        editTextEmail = findViewById(R.id.editTextEmail);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        buttonLogin = findViewById(R.id.buttonLogin);
+        setContentView(layout.activity_login_page);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFBB86FC")));
+            this.getWindow().setStatusBarColor(ContextCompat.getColor(this, color.purple_200));
+        }
+        prefUtil = new SharedPrefUtil(getApplicationContext());
+        editTextEmail = findViewById(id.editTextEmail);
+        editTextPassword = findViewById(id.editTextPassword);
+        buttonLogin = findViewById(id.buttonLogin);
 
 //        fireStoreManager = new FireStoreManager();
 //        fireStoreManager.initFireStoreDB();
@@ -59,13 +68,10 @@ public class LoginPage extends AppCompatActivity {
                 String password = editTextPassword.getText().toString().trim();
 
                 if (isValidEmail(email) && isValidPassword(password)) {
-
                     //fireStoreManager.readDB();
-                    readDBLogin(email,password);
+                    readDBLogin(email, password);
                     //fireStoreManager.readDBLogin(email,password);
                     //Toast.makeText(context, "Login Succesfull", Toast.LENGTH_SHORT).show();
-
-
 
                 } else {
                     //readDBLogin(email,password);
@@ -99,6 +105,7 @@ public class LoginPage extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String userNameDb = document.getString("user_name");
+                                String email = document.getString("email");
                                 String passwordDb = document.getString("password");
                                 if( username.equals(userNameDb) && password.equals(passwordDb)){
                                     String userType = document.getString("user_type");
@@ -113,7 +120,7 @@ public class LoginPage extends AppCompatActivity {
 
                                         Toast.makeText(getApplicationContext(),"Login Succesfull",Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(getApplicationContext(), AppListActivity.class);
-                                        intent.putExtra("email","user");
+                                        intent.putExtra("email", email);
                                         startActivity(intent);
 
                                     }

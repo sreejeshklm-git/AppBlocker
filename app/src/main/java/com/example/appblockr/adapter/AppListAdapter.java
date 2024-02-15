@@ -5,8 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Switch;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.SwitchCompat;
@@ -15,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appblockr.R;
 import com.example.appblockr.model.AppData;
 import com.example.appblockr.shared.SharedPrefUtil;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -27,10 +24,13 @@ public class AppListAdapter extends
     SharedPrefUtil prefUtil;
     private  Context context;
 
+    private ToggleChecked toggleChecked;
+
     // Pass in the contact array into the constructor
-    public AppListAdapter(ArrayList<AppData> contacts,Context context) {
+    public AppListAdapter(ArrayList<AppData> contacts,Context context, ToggleChecked toggleChecked) {
         appData = contacts;
         this.context= context;
+        this.toggleChecked = toggleChecked;
     }
     @Override
     public AppListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -45,10 +45,8 @@ public class AppListAdapter extends
         return viewHolder;
     }
 
-    // Involves populating data into the item through holder
     @Override
     public void onBindViewHolder(AppListAdapter.ViewHolder holder, int position) {
-        // Get the data model based on position
         AppData appInfo = appData.get(position);
         TextView appName = holder.appName;
         appName.setText(appInfo.getAppName());
@@ -62,8 +60,15 @@ public class AppListAdapter extends
         if(userType.equals("2")){
             holder.toggleButton.setOnCheckedChangeListener(null);
             holder.toggleButton.setClickable(false);
-           holder.toggleButton.setChecked(false);
-
+            holder.toggleButton.setChecked(appData.get(position).getIsAppLocked());
+        } else {
+            holder.toggleButton.setChecked(appData.get(position).getIsAppLocked());
+            holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    toggleChecked.onChecked(isChecked, position);
+                }
+            });
         }
 
 
@@ -93,5 +98,9 @@ public class AppListAdapter extends
             toggleButton = itemView.findViewById(R.id.switchButton);
 
         }
+    }
+
+    public interface ToggleChecked {
+        void onChecked(boolean isChecked, int position);
     }
 }

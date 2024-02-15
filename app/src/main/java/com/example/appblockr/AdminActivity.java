@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +52,10 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
         getSupportActionBar().hide();
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFBB86FC")));
+            this.getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple_200));
+        }
         db = FirebaseFirestore.getInstance();
         usersList= new ArrayList<String>();
         emailList= new ArrayList<String>();
@@ -70,7 +77,7 @@ public class AdminActivity extends AppCompatActivity {
             readDBApp();
         } else if (userType.equals("1")) {
             readDBUsers();
-            headerLable.setText("Dashboard");
+            headerLable.setText("Admin Dashboard");
         }
 
 

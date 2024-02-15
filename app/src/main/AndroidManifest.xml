@@ -45,7 +45,10 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".About" />
         <activity android:name=".ScreenBlocker" />
-        <activity android:name=".SplashScreen">
+        <activity
+            android:name=".SplashScreen"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,13 +1,17 @@
 package com.example.appblockr.ui.adduser
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.example.appblockr.MainActivity
+import com.example.appblockr.AdminActivity
 import com.example.appblockr.R
 import com.example.appblockr.databinding.ActivityAdduserBinding
 import com.example.appblockr.firestore.FireStoreManager
@@ -23,7 +27,10 @@ class AdduserActivity : AppCompatActivity() {
         supportActionBar?.setCustomView(R.layout.title_bar);
         supportActionBar?.elevation = 0F
         binding = DataBindingUtil.setContentView(this, R.layout.activity_adduser)
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            supportActionBar!!.setBackgroundDrawable(ColorDrawable(Color.parseColor("#FFBB86FC")))
+            this.window.statusBarColor = ContextCompat.getColor(this, R.color.purple_200)
+        }
         fireStoreManager = FireStoreManager()
         fireStoreManager.initFireStoreDB()
 
@@ -45,7 +52,9 @@ class AdduserActivity : AppCompatActivity() {
               )
               fireStoreManager.addDataToFireStoreDB(data, "add_users")
               clearEditFields()
-             // startActivity(Intent(this, MainActivity::class.java))
+              val intent = Intent(applicationContext, AdminActivity::class.java)
+              startActivity(intent)
+              finish()
           }
       }
 
