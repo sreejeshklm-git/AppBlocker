@@ -14,10 +14,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.appblockr.firestore.FireStoreManager;
@@ -33,6 +35,7 @@ public class LoginPage extends AppCompatActivity {
 
     EditText editTextEmail;
     EditText editTextPassword;
+    TextView errorText;
     AppCompatButton buttonLogin;
 
     //FireStoreManager fireStoreManager;
@@ -52,6 +55,7 @@ public class LoginPage extends AppCompatActivity {
         editTextEmail = findViewById(id.editTextEmail);
         editTextPassword = findViewById(id.editTextPassword);
         buttonLogin = findViewById(id.buttonLogin);
+        errorText = findViewById(id.errorText);
 
 //        fireStoreManager = new FireStoreManager();
 //        fireStoreManager.initFireStoreDB();
@@ -76,6 +80,12 @@ public class LoginPage extends AppCompatActivity {
                 } else {
                     //readDBLogin(email,password);
                     //fireStoreManager.readDBLogin(email,password);
+                    if (email.isEmpty()) {
+                        editTextEmail.setError("Email is required");
+                    }
+                    if (password.isEmpty()) {
+                        editTextPassword.setError("Password is required");
+                    }
                     Toast.makeText(getApplicationContext(),"Invalid email or password",Toast.LENGTH_SHORT).show();
                     //Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
@@ -86,9 +96,7 @@ public class LoginPage extends AppCompatActivity {
     }
 
     private boolean isValidEmail(String email) {
-
-       // return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-        return  true ;
+        return  !TextUtils.isEmpty(email) ;
     }
 
     private boolean isValidPassword(String password) {
@@ -127,6 +135,9 @@ public class LoginPage extends AppCompatActivity {
                                     else {
                                         Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
                                     }
+                                } else {
+                                    errorText.setVisibility(View.VISIBLE);
+                                    Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
                                 }
                                 Log.d("Data", document.getId() + " => " + document.getData());
                             }
