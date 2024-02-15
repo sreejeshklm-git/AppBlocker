@@ -1,5 +1,6 @@
 package com.example.appblockr.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -13,6 +14,8 @@ import com.example.appblockr.databinding.ItemUserBinding
 import com.example.appblockr.firestore.AppData
 import com.example.appblockr.firestore.FireStoreManager
 import com.example.appblockr.firestore.User
+import com.example.appblockr.model.AppModel
+import com.example.appblockr.shared.SharedPrefUtil
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -24,6 +27,8 @@ class AdminHomeActivity : AppCompatActivity() {
 
     private val userList: ArrayList<User> = ArrayList()
     private val appList: ArrayList<AppData> = ArrayList()
+    var apps: ArrayList<AppModel> = ArrayList()
+
 
     private lateinit var fireStoreManager: FireStoreManager
     private lateinit var db: FirebaseFirestore
@@ -37,7 +42,7 @@ class AdminHomeActivity : AppCompatActivity() {
 
         fireStoreManager = FireStoreManager()
         db = fireStoreManager.fireStoreInstance
-
+        getInstalledApps()
         if (userType == "2") {
             setupUserData()
             getUsersList()
@@ -135,4 +140,58 @@ class AdminHomeActivity : AppCompatActivity() {
 
     }
 
+    private fun getInstalledApps() {
+        val prefLockedAppList = SharedPrefUtil.getInstance(this).lockedAppsList
+        /*List<ApplicationInfo> packageInfos = getPackageManager().getInstalledApplications(0);*/
+        val pk =
+            packageManager
+        val intent = Intent(Intent.ACTION_MAIN, null)
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        val resolveInfoList = pk.queryIntentActivities(intent, 0)
+        for (resolveInfo in resolveInfoList) {
+            val activityInfo = resolveInfo.activityInfo
+            val name = activityInfo.loadLabel(packageManager).toString()
+            val icon = activityInfo.loadIcon(packageManager)
+            val packageName = activityInfo.packageName
+            if (!packageName.matches("com.robocora.appsift|com.android.settings")) {
+                if (!prefLockedAppList.isEmpty()) {
+                    //check if apps is locked
+                    if (prefLockedAppList.contains(packageName)) {
+                        apps.add(AppModel(name, icon, 1, packageName))
+                    } else {
+                        apps.add(AppModel(name, icon, 0, packageName))
+                    }
+                } else {
+                    apps.add(AppModel(name, icon, 0, packageName))
+                }
+            } else {
+                //do not add settings to app list
+            }
+        }
+        updateAppsFireDB()
+    }
+
+    private fun updateAppsFireDB() {
+        val tempList: ArrayList<AppData> = ArrayList()
+        val dataMap: HashMap<String, List<AppData>> = HashMap()
+        apps.forEach { appModel: AppModel ->
+
+            val data :AppData = AppData(
+                appModel.appName,appModel.packageName,"test_email","00:23","21",false
+            )
+            tempList.add(data)
+
+
+        }
+        dataMap.put("apps",tempList)
+
+        db.collection("app_list").document("srinivas.p@gmail.com").set(dataMap);
+    }
+
+
 }
+
+infix fun String.matches(regex: String): Boolean {
+return this.contains(regex)
+}
+

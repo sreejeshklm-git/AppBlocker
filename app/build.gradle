@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.robocora.appblockr"
         minSdkVersion 19
-        targetSdkVersion 32
+        targetSdkVersion 30
         versionCode 1
         versionName "1.01 "
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
