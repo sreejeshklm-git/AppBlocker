@@ -1,12 +1,12 @@
 package com.example.appblockr.firestore
 
 data class AppData(
-    val appName: String?,
-    val bundle_id: String?,
-    val email: String?,
-    val duration: String?,
-    val clicksCount: String?,
-    val isAppLocked: Boolean
+    var appName: String?,
+    var bundle_id: String?,
+    var email: String?,
+    var duration: String?,
+    var clicksCount: String?,
+    var isAppLocked: Boolean
 ) {
     constructor() : this("", "", "", "", "", false)
 }

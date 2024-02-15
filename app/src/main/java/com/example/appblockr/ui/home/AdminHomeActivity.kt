@@ -26,9 +26,9 @@ class AdminHomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdminHomeBinding
 
     private val userList: ArrayList<User> = ArrayList()
-    private val appList: ArrayList<AppData> = ArrayList()
-    var apps: ArrayList<AppModel> = ArrayList()
-
+    private val fireDBAppList: ArrayList<AppData> = ArrayList()
+    var installedApps: ArrayList<AppModel> = ArrayList()
+    val tempList: ArrayList<AppData> = ArrayList()
 
     private lateinit var fireStoreManager: FireStoreManager
     private lateinit var db: FirebaseFirestore
@@ -45,28 +45,28 @@ class AdminHomeActivity : AppCompatActivity() {
         getInstalledApps()
         if (userType == "2") {
             setupUserData()
-            getUsersList()
+            getUsersListFromFireDB()
         }else if (userType == "1"){
             setUpAppData()
-            getAppList()
+            getAppListFromFireDB()
         }
 
 //        GenericRecyclerAdapter
     }
 
-    private fun getAppList() {
+    private fun getAppListFromFireDB() {
         db.collection("apps_list")
             .get()
             .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
                 if (task.isSuccessful) {
                     for (document in task.result) {
                         val appData = document.toObject(AppData::class.java)
-                        appList.add(appData)
+                        fireDBAppList.add(appData)
                         Log.d(TAG,"App:: "+ appData.appName!!)
                         // hashMap = (Map<String, Object>) document.getData();
                         Log.d(TAG, document.id + " => " + document.data)
                     }
-                    Log.d(TAG, "App Size:: " + appList.size)
+                    Log.d(TAG, "App Size:: " + fireDBAppList.size)
                     appsAdapter.notifyDataSetChanged()
                 } else {
                     Log.w(TAG, "Error getting documents.", task.exception)
@@ -80,7 +80,7 @@ class AdminHomeActivity : AppCompatActivity() {
         binding.rvAppsList.visibility = View.VISIBLE
         binding.rvAppsList.layoutManager = LinearLayoutManager(this)
 
-        appsAdapter = object : GenericRecyclerAdapter<AppData, ItemAppsLayoutBinding>(appList) {
+        appsAdapter = object : GenericRecyclerAdapter<AppData, ItemAppsLayoutBinding>(tempList) {
             override fun getLayoutId(): Int {
                 return R.layout.item_apps_layout
             }
@@ -88,6 +88,16 @@ class AdminHomeActivity : AppCompatActivity() {
             override fun onBinder(model: AppData, viewBinding: ItemAppsLayoutBinding, position: Int) {
                 viewBinding.txtAppName.text = model.appName
                 viewBinding.txtBundle.text = model.bundle_id
+                viewBinding.switchAppLocked.isChecked = model.isAppLocked
+
+                /*viewBinding.switchAppLocked.setOnCheckedChangeListener{_,isChecked ->
+                    apps.get(position).status.let { if (isChecked) { 1 } else { 0 } }
+
+                   // appsAdapter.notifyItemChanged(position)
+                    Log.d("Position UPDATE:: ",""+apps.get(position).status)
+                    updateAppsFireDB()
+
+                }*/
             }
 
         }
@@ -116,7 +126,7 @@ class AdminHomeActivity : AppCompatActivity() {
 
     }
 
-    private fun getUsersList() {
+    private fun getUsersListFromFireDB() {
 
         db.collection("add_users")
             .get()
@@ -157,35 +167,32 @@ class AdminHomeActivity : AppCompatActivity() {
                 if (!prefLockedAppList.isEmpty()) {
                     //check if apps is locked
                     if (prefLockedAppList.contains(packageName)) {
-                        apps.add(AppModel(name, icon, 1, packageName))
+                        installedApps.add(AppModel(name, icon, 1, packageName))
                     } else {
-                        apps.add(AppModel(name, icon, 0, packageName))
+                        installedApps.add(AppModel(name, icon, 0, packageName))
                     }
                 } else {
-                    apps.add(AppModel(name, icon, 0, packageName))
+                    installedApps.add(AppModel(name, icon, 0, packageName))
                 }
             } else {
                 //do not add settings to app list
             }
         }
-        updateAppsFireDB()
+        updateAppsToFireDB()
     }
 
-    private fun updateAppsFireDB() {
-        val tempList: ArrayList<AppData> = ArrayList()
-        val dataMap: HashMap<String, List<AppData>> = HashMap()
-        apps.forEach { appModel: AppModel ->
+    private fun updateAppsToFireDB() {
 
+        val dataMap: HashMap<String, List<AppData>> = HashMap()
+        installedApps.forEach { appModel: AppModel ->
             val data :AppData = AppData(
-                appModel.appName,appModel.packageName,"test_email","00:23","21",false
+                appModel.appName,appModel.packageName,"test_email","00:23","21",appModel.status==1
             )
             tempList.add(data)
-
-
         }
         dataMap.put("apps",tempList)
-
         db.collection("app_list").document("srinivas.p@gmail.com").set(dataMap);
+
     }
 
 
