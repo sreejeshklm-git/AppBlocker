@@ -27,29 +27,44 @@
                 android:layout_marginTop="80dp"
                 android:src="@drawable/locked_icon" />
 
-            <EditText
-                android:id="@+id/editTextEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/stroke_box"
-                android:hint="Email"
-                android:inputType="textEmailAddress"
-                android:minHeight="48dp"
-                android:padding="10dp" />
+        <EditText
+            android:layout_gravity="center"
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/black"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/stroke_box"
+            android:padding="10dp"
+            android:minHeight="48dp"
+            android:textColorHint="@color/grey"
+            android:hint="User name"/>
 
-            <EditText
-                android:id="@+id/editTextPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/stroke_box"
-                android:hint="Password"
-                android:inputType="textEmailAddress"
-                android:minHeight="48dp"
-                android:padding="10dp" />
-
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/black"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/stroke_box"
+            android:minHeight="48dp"
+            android:textColorHint="@color/grey"
+            android:padding="10dp"
+            android:hint="Password"/>
+        <TextView
+            android:id="@+id/errorText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/alertRed"
+            android:textSize="17sp"
+            android:text="Invalid credintial"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            android:textStyle="bold"
+            android:layout_centerVertical="true"
+            />
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonLogin"
                 android:layout_width="match_parent"

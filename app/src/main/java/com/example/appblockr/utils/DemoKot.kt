@@ -13,7 +13,6 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.appblockr.model.AppData
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -77,20 +76,24 @@ class DemoKot {
 
 
         @RequiresApi(Build.VERSION_CODES.Q)
-        fun printCurrentUsageStatus(context: Context): ArrayList<AppData> {
+        fun printCurrentUsageStatus(
+            context: Context,
+            appDataList: java.util.ArrayList<AppData>,
+            usersEmail: String
+        ): java.util.ArrayList<AppData> {
             var list = ArrayList<AppData>()
               if(checkUsageStatsPermission(context)){
-                  list =getData(context)
+                  list =getData(context, appDataList, usersEmail)
               }else{
                   requestUsageStatsPermission(context)
-                list = getData(context)
+                list = getData(context, appDataList, usersEmail)
               }
 
             return list
         }
 
         @RequiresApi(Build.VERSION_CODES.Q)
-        fun getData(context: Context): ArrayList<AppData> {
+        fun getData(context: Context, appDataList: ArrayList<AppData>, usersEmail: String): ArrayList<AppData> {
             val list = ArrayList<AppData>()
             val usesStatsList = printUsageStats(getUsageStatsList(context))
             if (usesStatsList.isNotEmpty()) {
@@ -101,9 +104,19 @@ class DemoKot {
                             appData.appName = getAppNameFromPackageName(u.packageName, context)
                             appData.clicksCount = ""
                             appData.duration = getTime(u.totalTimeVisible)
-                            appData.email = ""
+                            appData.email = usersEmail
                             appData.bundle_id = u.packageName
-                            appData.isAppLocked = false
+                            if (appDataList.isNotEmpty()) {
+                               for (i in appDataList) {
+                                   if (appData.appName.equals(i.appName)) {
+                                       appData.isAppLocked = i.isAppLocked
+                                   } else {
+                                       appData.isAppLocked = false
+                                   }
+                               }
+                            } else {
+                                appData.isAppLocked = false
+                            }
                             list.add(appData)
                         }
                     }

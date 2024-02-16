@@ -2,12 +2,16 @@ package com.example.appblockr;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 //import gr.net.maroulis.library.EasySplashScreen;
 
@@ -17,6 +21,11 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen_layout);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFBB86FC")));
+            this.getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple_200));
+        }
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         handler=new Handler();
         handler.postDelayed(new Runnable() {
             @Override

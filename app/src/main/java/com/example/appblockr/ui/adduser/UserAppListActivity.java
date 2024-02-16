@@ -2,9 +2,13 @@ package com.example.appblockr.ui.adduser;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -32,7 +36,10 @@ public class UserAppListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle("Users Application");
         setContentView(R.layout.activity_user_app_list);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFBB86FC")));
+            this.getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple_200));
+        }
 //        usersEmail = getIntent().getStringExtra("email");
         db = FirebaseFirestore.getInstance();
 
