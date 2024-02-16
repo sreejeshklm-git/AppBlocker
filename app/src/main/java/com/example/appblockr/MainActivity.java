@@ -82,16 +82,6 @@ public class MainActivity extends AppCompatActivity {
         //BackgroundManager.getInstance().init(this).startAlarmManager();
         ContextCompat.startForegroundService(this, new Intent(this, ForegroundService.class));
 
-        fireStoreManager = new FireStoreManager();
-       db =  fireStoreManager.getFireStoreInstance();
-
-       /* ArrayList<User> users = fireStoreManager.readUserListFromDB();
-        Log.d("FireStoreManager::" , "MainAct:: "+users.size());*/
-
-        getUsersList();
-        Log.d("FireStoreManager::" , "MainAct:: "+usersList.size());
-
-
         //   BackgroundManager.getInstance().init(this).startService();
        // BackgroundManager.getInstance().init(this).startAlarmManager();
         addIconToBar();
@@ -166,29 +156,6 @@ public class MainActivity extends AppCompatActivity {
         //toggle permissions box
         togglePermissionBox();
        // checkAppsFirstTimeLaunch();
-
-    }
-
-    private void getUsersList() {
-        db.collection("add_users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                User users = document.toObject(User.class);
-                                usersList.add(users);
-                                Log.d(TAG, users.getEmail());
-                                // hashMap = (Map<String, Object>) document.getData();
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-                            Log.d(TAG, "Size:: " + usersList.size());
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
 
     }
 
