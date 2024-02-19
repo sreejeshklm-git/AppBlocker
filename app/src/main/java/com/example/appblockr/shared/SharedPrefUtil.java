@@ -2,6 +2,7 @@ package com.example.appblockr.shared;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.appblockr.model.BlockProfile;
 
@@ -12,6 +13,7 @@ public class SharedPrefUtil {
     private static final String SHARED_APP_PREFERENCE_NAME = "SharedPref";
     Context cxt;
     private final String EXTRA_LAST_APP = "EXTRA_LAST_APP";
+    private final String USER_TYPE= "user_type";
     private final SharedPreferences pref;
     private SharedPreferences.Editor mEditor;
     BlockProfile blockProfile;
@@ -136,4 +138,13 @@ public class SharedPrefUtil {
         return getString("end_minute");
     }
 
+    public void putUserType(String key, String value) {
+        pref.edit().putString(key, value).apply();
+    }
+    public String getUserType(String userType) {
+        return getString(userType);
+    }
+    public void setUserType(String userType) {
+        putUserType(USER_TYPE, userType);
+    }
 }

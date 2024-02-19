@@ -14,21 +14,16 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appblockr.adapter.AllAppAdapter;
 import com.example.appblockr.model.AppModel;
-import com.example.appblockr.services.MyAccessibilityService;
 import com.example.appblockr.shared.SharedPrefUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -179,12 +174,7 @@ public class ShowAllApps extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_button:
-                // Perform action when the button is clicked
-               // Toast.makeText(ctx, "testing", Toast.LENGTH_SHORT).show();
-                disableAccessibilityService(this, MyAccessibilityService.class);
-                enableAccessibilityService(this, MyAccessibilityService.class);
-                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
