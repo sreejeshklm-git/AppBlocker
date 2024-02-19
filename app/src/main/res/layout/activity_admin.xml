@@ -31,6 +31,15 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
+            android:visibility="invisible"
+            android:padding="12dp"
+            android:src="@drawable/baseline_power_settings_new_24" />
+
+        <ImageView
+            android:id="@+id/add_user"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@+id/log_out"
             android:padding="12dp"
             android:src="@drawable/add_icon" />
     </RelativeLayout>

@@ -13,6 +13,7 @@ public class SharedPrefUtil {
     Context cxt;
     private final String EXTRA_LAST_APP = "EXTRA_LAST_APP";
     private final String USER_TYPE= "user_type";
+    private final String USER_EMAIL= "user_email";
     private final SharedPreferences pref;
     private SharedPreferences.Editor mEditor;
     BlockProfile blockProfile;
@@ -145,5 +146,11 @@ public class SharedPrefUtil {
     }
     public void setUserType(String userType) {
         putUserType(USER_TYPE, userType);
+    }
+    public String getUserEmail(String userEmail) {
+        return getString(userEmail);
+    }
+    public void setUserEmail(String userEmail) {
+        putUserType(USER_EMAIL, userEmail);
     }
 }

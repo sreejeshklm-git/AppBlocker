@@ -83,10 +83,10 @@ public class LoginPage extends AppCompatActivity {
                     if (email.isEmpty()) {
                         editTextEmail.setError("Email is required");
                     }
-                    if (password.isEmpty()) {
-                        editTextPassword.setError("Password is required");
+                    if (password.isEmpty() || !isValidPassword(password)) {
+                        editTextPassword.setError("Password is required & minimum six digits");
                     }
-                    Toast.makeText(getApplicationContext(),"Invalid email or password",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(),"Invalid email or password",Toast.LENGTH_SHORT).show();
                     //Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -100,7 +100,6 @@ public class LoginPage extends AppCompatActivity {
     }
 
     private boolean isValidPassword(String password) {
-
         return password.length() >= 6;
     }
     public void readDBLogin(String username,String password){
@@ -119,25 +118,25 @@ public class LoginPage extends AppCompatActivity {
                                     String userType = document.getString("user_type");
                                     Log.d("Usertype",userType);
                                     prefUtil.setUserType(userType);
+                                   // prefUtil.setUserEmail(email);
                                     if(userType.equals("1")) {
                                         Toast.makeText(getApplicationContext(),"Login Succesfull",Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
                                         startActivity(intent);
-
+                                        finish();
+                                        return;
                                     } else if (userType.equals("2")) {
-
                                         Toast.makeText(getApplicationContext(),"Login Succesfull",Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(getApplicationContext(), AppListActivity.class);
                                         intent.putExtra("email", email);
                                         startActivity(intent);
-
-                                    }
-                                    else {
-                                        Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
+                                        finish();
+                                        return;
+                                    } else {
+                                      //  Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     errorText.setVisibility(View.VISIBLE);
-                                    Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
                                 }
                                 Log.d("Data", document.getId() + " => " + document.getData());
                             }

@@ -37,7 +37,8 @@ public class AdminActivity extends AppCompatActivity {
     private ArrayList courseNames;
     private Toolbar toolbar;
     private RecyclerView recyclerView;
-    private ImageView addIcon;
+    private ImageView logOut;
+    private ImageView addUser;
     private FirebaseFirestore db;
     private TextView headerLable;
     ArrayList<String> usersList,emailList;
@@ -65,10 +66,11 @@ public class AdminActivity extends AppCompatActivity {
 
         //toolbar=findViewById(R.id.toolbar);
         recyclerView=findViewById(R.id.recyclerView);
-        addIcon=findViewById(R.id.log_out);
+        addUser=findViewById(R.id.add_user);
+        logOut=findViewById(R.id.log_out);
         headerLable= findViewById(R.id.headerLable);
         if(userType.equals("2")){
-            addIcon.setVisibility(View.GONE);
+            addUser.setVisibility(View.GONE);
             headerLable.setText("Application Data");
         }
         if(userType.equals("2")){
@@ -80,13 +82,20 @@ public class AdminActivity extends AppCompatActivity {
             headerLable.setText("Admin Dashboard");
         }
 
-
-
-        addIcon.setOnClickListener(new View.OnClickListener() {
+        addUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(getApplicationContext(), AdduserActivity.class);
                 startActivity(intent);
+            }
+        });
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prefUtil.setUserEmail("");
+                Intent intent=new Intent(getApplicationContext(), LoginPage.class);
+                startActivity(intent);
+                finishAffinity();
             }
         });
 
