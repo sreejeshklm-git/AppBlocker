@@ -1,5 +1,6 @@
 package com.example.appblockr;
 
+import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -42,6 +43,7 @@ import com.example.appblockr.services.BackgroundManager;
 import com.example.appblockr.services.ForegroundService;
 import com.example.appblockr.services.MyAccessibilityService;
 import com.example.appblockr.shared.SharedPrefUtil;
+import com.example.appblockr.utils.DemoKot;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -77,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     ArrayList<AppModel> installedAppsList;
     ArrayList<AppData> commonList;
     ArrayList<String> lockedApps;
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -124,10 +125,9 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        recyclerView.setAdapter(adapter);
-
+        updateDocToDB();
 //        showBlockingInfo();
-        getAppListFromDb();
-        getInstalledApps();
+
 
         setScheduleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -506,7 +506,39 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
     }
 
-
+    private void updateDocToDB() {
+        DocumentReference docRef = db.collection("apps_list").document(usersEmail);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    try {
+                        if (document.exists()) {
+                            getAppListFromDb();
+                            getInstalledApps();
+                        } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                updateDB();
+                            }
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.i("TAG", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private void updateDB() {
+        appsListFromFireDb = DemoKot.Companion.printCurrentUsageStatus(getApplicationContext(), appsListFromFireDb, usersEmail);
+        ApplicationListModel applicationListModel = new ApplicationListModel(usersEmail, appsListFromFireDb);
+        db.collection("apps_list").document(usersEmail).set(applicationListModel);
+        adapter = new AppListAdapter(appsListFromFireDb, getApplicationContext(), this);
+        recyclerView.setAdapter(adapter);
+    }
 
     @Override
     public void onChecked(boolean isChecked, int position,ArrayList<AppData> finalList) {

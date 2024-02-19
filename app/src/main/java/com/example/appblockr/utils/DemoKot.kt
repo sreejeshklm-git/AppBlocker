@@ -17,10 +17,12 @@ import com.example.appblockr.model.AppData
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
+
 class DemoKot {
     companion object {
         private val dateFormat = SimpleDateFormat("M-d-yyyy HH:mm:ss")
         val TAG = DemoKot::class.java.simpleName
+        private val appLaunchCountPerDay = HashMap<String, Int>()
         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         fun getStats(context: Context) {
             val usm = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
@@ -102,21 +104,22 @@ class DemoKot {
                         if (u.totalTimeInForeground.toInt() != 0) {
                             val appData = AppData()
                             appData.appName = getAppNameFromPackageName(u.packageName, context)
-                            appData.clicksCount = ""
+                            appData.clicksCount = incrementAppLaunchCount(u.packageName).toString()
                             appData.duration = getTime(u.totalTimeVisible)
                             appData.email = usersEmail
                             appData.bundle_id = u.packageName
-                            if (appDataList.isNotEmpty()) {
-                               for (i in appDataList) {
-                                   if (appData.appName.equals(i.appName)) {
-                                       appData.isAppLocked = i.isAppLocked
-                                   } else {
-                                       appData.isAppLocked = false
-                                   }
-                               }
-                            } else {
-                                appData.isAppLocked = false
-                            }
+                            appData.isAppLocked = false
+//                            if (appDataList.isNotEmpty()) {
+//                               for (i in appDataList) {
+//                                   if (appData.appName.equals(i.appName)) {
+//                                       appData.isAppLocked = i.isAppLocked
+//                                   } else {
+//                                       appData.isAppLocked = false
+//                                   }
+//                               }
+//                            } else {
+//                                appData.isAppLocked = false
+//                            }
                             list.add(appData)
                         }
                     }
@@ -172,5 +175,15 @@ class DemoKot {
             context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
             // Inform the user to grant permission and handle it appropriately
         }
+
+        private fun incrementAppLaunchCount(packageName: String): Int {
+            var launchCount = 0
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                launchCount = appLaunchCountPerDay.getOrDefault(packageName, 0)
+            }
+            appLaunchCountPerDay[packageName] = launchCount + 1
+            return launchCount + 1
+        }
+
     }
 }
