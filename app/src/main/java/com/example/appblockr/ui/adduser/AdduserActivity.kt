@@ -16,6 +16,7 @@ import com.example.appblockr.R
 import com.example.appblockr.databinding.ActivityAdduserBinding
 import com.example.appblockr.firestore.FireStoreManager
 import com.example.appblockr.firestore.User
+import com.example.appblockr.utils.Utils
 
 class AdduserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdduserBinding
@@ -37,12 +38,13 @@ class AdduserActivity : AppCompatActivity() {
 
 
       binding.btnAddUser.setOnClickListener{
+          Utils.hideKeyboard(this@AdduserActivity)
           if (checkAllFields()) {
               val user = User(
                   email = binding.edtEmail.text.toString(),
                   password = binding.edtPassword.text.toString(),
                   user_name = binding.edtUserName.text.toString(),
-                  1
+                  "1"
               )
               val data = hashMapOf(
                   "email" to "${user.email}",

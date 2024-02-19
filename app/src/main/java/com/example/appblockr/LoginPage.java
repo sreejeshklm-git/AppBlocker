@@ -25,6 +25,7 @@ import com.example.appblockr.databinding.ActivityLoginPageBinding;
 import com.example.appblockr.firestore.FireStoreManager;
 import com.example.appblockr.shared.SharedPrefUtil;
 import com.example.appblockr.ui.adduser.AppListActivity;
+import com.example.appblockr.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,7 +40,7 @@ public class LoginPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("Login");
+//        getSupportActionBar().setTitle("Login");
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login_page);
 
         prefUtil = new SharedPrefUtil(getApplicationContext());
@@ -47,15 +48,13 @@ public class LoginPage extends AppCompatActivity {
         binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.hideKeyboard(LoginPage.this);
                 String email = binding.editTextEmail.getText().toString().trim();
                 String password = binding.editTextPassword.getText().toString().trim();
 
                 if (isValidEmail(email) && isValidPassword(password)) {
                     readDBLogin(email, password);
                 } else {
-                    Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
-                    //readDBLogin(email,password);
-                    //fireStoreManager.readDBLogin(email,password);
                     if (email.isEmpty()) {
                         binding.editTextEmail.setError("Email is required");
                     }
@@ -63,7 +62,6 @@ public class LoginPage extends AppCompatActivity {
                         binding.editTextPassword.setError("Password is required");
                     }
                     Toast.makeText(getApplicationContext(),"Invalid email or password",Toast.LENGTH_SHORT).show();
-                    //Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -102,15 +100,16 @@ public class LoginPage extends AppCompatActivity {
                                     } else if (userType.equals("2")) {
 
                                         Toast.makeText(getApplicationContext(),"Login Succesfull",Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(getApplicationContext(), AppListActivity.class);
-                                        intent.putExtra("email","user");
+//                                        Intent intent = new Intent(getApplicationContext(), AppListActivity.class);
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        intent.putExtra("email",email);
                                         startActivity(intent);
 
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    errorText.setVisibility(View.VISIBLE);
+                                    binding.errorText.setVisibility(View.VISIBLE);
                                     Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
                                 }
                                 Log.d("Data", document.getId() + " => " + document.getData());

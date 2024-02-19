@@ -2,6 +2,7 @@ package com.example.appblockr.shared;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.appblockr.model.BlockProfile;
 

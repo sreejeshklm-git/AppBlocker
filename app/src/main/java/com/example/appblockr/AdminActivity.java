@@ -51,11 +51,11 @@ public class AdminActivity extends AppCompatActivity {
         //setTheme(R.style.Theme_Appsift);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
-        getSupportActionBar().hide();
+       /* getSupportActionBar().hide();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFBB86FC")));
             this.getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple_200));
-        }
+        }*/
         db = FirebaseFirestore.getInstance();
         usersList= new ArrayList<String>();
         emailList= new ArrayList<String>();
