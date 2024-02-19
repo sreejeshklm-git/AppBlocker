@@ -28,10 +28,7 @@ class AdduserActivity : AppCompatActivity() {
         supportActionBar?.setCustomView(R.layout.title_bar);
         supportActionBar?.elevation = 0F
         binding = DataBindingUtil.setContentView(this, R.layout.activity_adduser)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            supportActionBar!!.setBackgroundDrawable(ColorDrawable(Color.parseColor("#FFBB86FC")))
-            this.window.statusBarColor = ContextCompat.getColor(this, R.color.purple_200)
-        }
+
         fireStoreManager = FireStoreManager()
         fireStoreManager.initFireStoreDB()
 

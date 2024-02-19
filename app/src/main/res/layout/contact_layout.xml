@@ -62,7 +62,9 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:visibility="gone" />
+                android:visibility="visible"
+                android:onClick="@null"
+                />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

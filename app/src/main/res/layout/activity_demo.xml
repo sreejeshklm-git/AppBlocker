@@ -8,6 +8,7 @@
     android:background="@drawable/add_user_gradient"
     tools:context=".ui.adduser.AppListActivity">
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

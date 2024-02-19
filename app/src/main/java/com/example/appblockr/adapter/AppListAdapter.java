@@ -62,6 +62,8 @@ public class AppListAdapter extends
 
         holder.toggleButton.setChecked(appInfo.getIsAppLocked());
 
+        holder.toggleButton.setOnCheckedChangeListener(null);
+        holder.toggleButton.setClickable(false);
         if (userType.equals("2")) {
             holder.toggleButton.setOnCheckedChangeListener(null);
             holder.toggleButton.setClickable(false);
@@ -87,7 +89,7 @@ public class AppListAdapter extends
                     appInfo.setIsAppLocked(!appInfo.getIsAppLocked());
 
                     holder.cardView.setCardBackgroundColor(appInfo.getIsAppLocked()? Color.WHITE:Color.LTGRAY);
-
+                    holder.toggleButton.setChecked(appInfo.getIsAppLocked());
                     Log.d("$$onBindViewHolder:: ",appInfo.getAppName());
 
                     toggleCheckedListener.onChecked(appInfo.getIsAppLocked(), position, appData);
