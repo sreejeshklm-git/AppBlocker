@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:textColor="#ffffff"
             android:textSize="17sp"
+           android:layout_alignParentStart="true"
             android:layout_marginLeft="80dp"
             android:textStyle="bold"
             android:layout_centerVertical="true"
@@ -30,9 +31,9 @@
             android:id="@+id/add_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@+id/headerLable"
-            android:padding="12dp"
-            android:layout_marginLeft="100dp"
+            android:layout_toLeftOf="@+id/logout"
+            android:padding="6dp"
+            android:layout_marginRight="20dp"
             android:src="@drawable/add_icon" />
         <ImageView
             android:layout_width="50dp"

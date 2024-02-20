@@ -1,15 +1,15 @@
 package com.example.appblockr.ui.adduser
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.example.appblockr.AdminActivity
 import com.example.appblockr.R
@@ -17,10 +17,16 @@ import com.example.appblockr.databinding.ActivityAdduserBinding
 import com.example.appblockr.firestore.FireStoreManager
 import com.example.appblockr.firestore.User
 import com.example.appblockr.utils.Utils
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.model.Document
 
 class AdduserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdduserBinding
-    private lateinit var fireStoreManager: FireStoreManager
+    private lateinit var db : FirebaseFirestore
+
+    private val spinnerData : ArrayList<String> = arrayListOf("Pleas select User Type","User","Admin")
+    private var user_type = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +35,19 @@ class AdduserActivity : AppCompatActivity() {
         supportActionBar?.elevation = 0F
         binding = DataBindingUtil.setContentView(this, R.layout.activity_adduser)
 
-        fireStoreManager = FireStoreManager()
-        fireStoreManager.initFireStoreDB()
+       db = FirebaseFirestore.getInstance()
+
+        binding.spinnerUserType.adapter = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,spinnerData)
+
+        binding.spinnerUserType.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                user_type = spinnerData[p2]
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
 
 
 
@@ -39,17 +56,15 @@ class AdduserActivity : AppCompatActivity() {
           if (checkAllFields()) {
               val user = User(
                   email = binding.edtEmail.text.toString(),
-                  password = binding.edtPassword.text.toString(),
                   user_name = binding.edtUserName.text.toString(),
-                  "1"
+                  password = binding.edtPassword.text.toString(),
+                  user_type = user_type,
+                  android_id = ""
               )
-              val data = hashMapOf(
-                  "email" to "${user.email}",
-                  "password" to "${user.password}",
-                  "user_name" to "${user.user_name}",
-                  "user_type" to "${user.user_type}",
-              )
-              fireStoreManager.addDataToFireStoreDB(data, "add_users")
+              user.user_type = user.assignUserType()
+
+              user.email?.let { it1 -> db.collection("add_users").document(it1).set(user) }
+
               clearEditFields()
               val intent = Intent(applicationContext, AdminActivity::class.java)
               startActivity(intent)
@@ -76,6 +91,10 @@ class AdduserActivity : AppCompatActivity() {
         }
         if (binding.edtPassword.length() == 0 || !isValidPassword(binding.edtPassword.text.toString())) {
             binding.edtPassword.error = "Password is required & minimum six digits"
+            return false
+        }
+        if (user_type.isBlank() || user_type.equals("Pleas select User Type")) {
+            Toast.makeText(this,"Pleas select User Type",Toast.LENGTH_SHORT).show()
             return false
         }
         return true
