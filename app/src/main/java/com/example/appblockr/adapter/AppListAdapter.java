@@ -65,24 +65,8 @@ public class AppListAdapter extends
         holder.toggleButton.setOnCheckedChangeListener(null);
         holder.toggleButton.setClickable(false);
         if (userType.equals("2")) {
-            holder.toggleButton.setOnCheckedChangeListener(null);
-            holder.toggleButton.setClickable(false);
-//            holder.toggleButton.setChecked(appData.get(holder.getAdapterPosition()).getIsAppLocked());
+            holder.cardView.setOnClickListener(null);
         } else {
-//            holder.toggleButton.setChecked(appData.get(holder.getAdapterPosition()).getIsAppLocked());
-           /* holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                    holder.toggleButton.setChecked(!appInfo.getIsAppLocked());
-                    appInfo.setIsAppLocked(!appInfo.getIsAppLocked());
-
-                    Log.d("$$onBindViewHolder:: ",appInfo.getAppName());
-
-                    toggleCheckedListener.onChecked(appInfo.getIsAppLocked(), position, appData);
-                    notifyItemChanged(position);
-                }
-            });*/
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
