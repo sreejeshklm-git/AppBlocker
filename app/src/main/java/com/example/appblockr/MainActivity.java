@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -43,6 +44,7 @@ import com.example.appblockr.services.BackgroundManager;
 import com.example.appblockr.services.ForegroundService;
 import com.example.appblockr.services.MyAccessibilityService;
 import com.example.appblockr.shared.SharedPrefUtil;
+import com.example.appblockr.ui.stats.UsesStatsActivity;
 import com.example.appblockr.utils.DemoKot;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,6 +53,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -387,6 +390,11 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         int id = item.getItemId();
         if (id == R.id.scheduleMenuBtn) {
             Intent myIntent = new Intent(MainActivity.this, Schedule.class);
+            MainActivity.this.startActivity(myIntent);
+        }
+        if (id == R.id.statsButton) {
+            Intent myIntent = new Intent(MainActivity.this, UsesStatsActivity.class);
+            myIntent.putExtra("email", usersEmail);
             MainActivity.this.startActivity(myIntent);
         }
 

@@ -34,6 +34,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/examDate"
         android:layout_width="0dp"
+        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:text="packageName"
         android:textColor="@color/black"
