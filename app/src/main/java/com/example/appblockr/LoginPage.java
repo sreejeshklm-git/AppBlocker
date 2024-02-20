@@ -27,10 +27,12 @@ import com.example.appblockr.shared.SharedPrefUtil;
 import com.example.appblockr.ui.adduser.AppListActivity;
 import com.example.appblockr.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class LoginPage extends AppCompatActivity {
     private ActivityLoginPageBinding binding;
@@ -41,7 +43,7 @@ public class LoginPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        getSupportActionBar().setTitle("Login");
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_login_page);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login_page);
 
         prefUtil = new SharedPrefUtil(getApplicationContext());
         db = FirebaseFirestore.getInstance();
@@ -61,7 +63,7 @@ public class LoginPage extends AppCompatActivity {
                     if (password.isEmpty()) {
                         binding.editTextPassword.setError("Password is required");
                     }
-                    Toast.makeText(getApplicationContext(),"Invalid email or password",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -70,55 +72,72 @@ public class LoginPage extends AppCompatActivity {
     }
 
     private boolean isValidEmail(String email) {
-        return  !TextUtils.isEmpty(email) ;
+        return !TextUtils.isEmpty(email);
     }
 
     private boolean isValidPassword(String password) {
         return password.length() >= 6;
     }
-    public void readDBLogin(String username,String password){
+
+    public void readDBLogin(String username, String password) {
         boolean loginSuc;
         db.collection("add_users")
+                .whereEqualTo("user_name", username)
+                .whereEqualTo("password", password)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String userNameDb = document.getString("user_name");
-                                String email = document.getString("email");
-                                String passwordDb = document.getString("password");
-                                if( username.equals(userNameDb) && password.equals(passwordDb)){
+                            QuerySnapshot documents = task.getResult();
+                            int documentSize = documents.getDocuments().size();
+                            Log.e("Size==",""+documentSize);
+                            if(documentSize>0){
+                                for (DocumentSnapshot document : task.getResult()) {
                                     String userType = document.getString("user_type");
-                                    Log.d("Usertype",userType);
-                                    prefUtil.setUserType(userType);
-                                    if(userType.equals("1")) {
-                                        Toast.makeText(getApplicationContext(),"Login Succesfull",Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
-                                        startActivity(intent);
+                                    String passwordDB = document.getString("password");
+                                    String userNameDB = document.getString("user_name");
+                                    String email = document.getString("email");
+                                    prefUtil.setEmail(email);
+                                    prefUtil.setUserName(userNameDB);
+                                    prefUtil.setPassword(passwordDB);
 
-                                    } else if (userType.equals("2")) {
+                                    if(password.equals(passwordDB)){
+                                        prefUtil.setUserType(userType);
+                                        if(userType.equals("1")) {
+                                            binding.errorText.setVisibility(View.INVISIBLE);
+                                            Toast.makeText(getApplicationContext(),"Login Succesfull",Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
+                                            startActivity(intent);
+                                            binding.editTextEmail.getText().clear();
+                                            binding.editTextPassword.getText().clear();
+                                            finishAffinity();
 
-                                        Toast.makeText(getApplicationContext(),"Login Succesfull",Toast.LENGTH_SHORT).show();
+                                        }else if (userType.equals("2")) {
+                                            binding.errorText.setVisibility(View.INVISIBLE);
+                                            Toast.makeText(getApplicationContext(),"Login Succesfull",Toast.LENGTH_SHORT).show();
 //                                        Intent intent = new Intent(getApplicationContext(), AppListActivity.class);
-                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        intent.putExtra("email",email);
-                                        startActivity(intent);
-
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                            intent.putExtra("email",email);
+                                            startActivity(intent);
+                                            binding.editTextEmail.getText().clear();
+                                            binding.editTextPassword.getText().clear();
+                                            finishAffinity();
+                                        }
                                     }
-                                } else {
-                                    binding.errorText.setVisibility(View.VISIBLE);
-                                    Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
+//                                prefUtil.setUserType(userType);
+//                                Log.d("userType+++", userType);
                                 }
-                                Log.d("Data", document.getId() + " => " + document.getData());
+                            }else{
+                                binding.errorText.setVisibility(View.VISIBLE);
+                                Toast.makeText(getApplicationContext(),"Invalid Credentials",Toast.LENGTH_LONG).show();
                             }
-                        } else {
-                            Log.w("data", "Error getting documents.", task.getException());
+
+
                         }
                     }
                 });
+
     }
 
 }
