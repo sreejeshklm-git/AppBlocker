@@ -30,9 +30,8 @@
             android:id="@+id/add_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@+id/headerLable"
-            android:padding="12dp"
-            android:layout_marginLeft="100dp"
+            android:layout_toLeftOf="@+id/logout"
+            android:padding="10dp"
             android:src="@drawable/add_icon" />
         <ImageView
             android:layout_width="50dp"
