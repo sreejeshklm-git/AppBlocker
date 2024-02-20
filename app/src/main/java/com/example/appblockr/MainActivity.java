@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     TextView btnEnableUsageAccess,btnEnableAS, btnEnableOverlay,blockingScheduleDescription,scheduleMode ;
     ImageView checkBoxOverlay, checkBoxUsage,checkedASIcon;
 
+
     private String usersEmail;
     private FirebaseFirestore db;
     private AppListAdapter adapter;
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     ArrayList<AppModel> installedAppsList;
     ArrayList<AppData> commonList;
     ArrayList<String> lockedApps;
+    SharedPrefUtil prefUtil;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -93,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         lockedApps = new ArrayList<String>();
 
         db = FirebaseFirestore.getInstance();
+
+        prefUtil = new SharedPrefUtil(getApplicationContext());
 
       // BackgroundManager.getInstance().init(this).startService();
         //BackgroundManager.getInstance().init(this).startAlarmManager();
@@ -388,6 +393,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         if (id == R.id.scheduleMenuBtn) {
             Intent myIntent = new Intent(MainActivity.this, Schedule.class);
             MainActivity.this.startActivity(myIntent);
+        }else if(id == R.id.logout_item){
+                prefUtil.setUserName("");
+                prefUtil.setPassword("");
+                Intent intent=new Intent(getApplicationContext(), LoginPage.class);
+                startActivity(intent);
+                finishAffinity();
         }
 
         return super.onOptionsItemSelected(item);

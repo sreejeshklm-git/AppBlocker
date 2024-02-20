@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ public class AdminActivity extends AppCompatActivity {
     private ArrayList courseNames;
     private Toolbar toolbar;
     private RecyclerView recyclerView;
-    private ImageView addIcon;
+    private ImageView addIcon,logoutText;
     private FirebaseFirestore db;
     private TextView headerLable;
     ArrayList<String> usersList,emailList;
@@ -65,8 +66,10 @@ public class AdminActivity extends AppCompatActivity {
 
         //toolbar=findViewById(R.id.toolbar);
         recyclerView=findViewById(R.id.recyclerView);
-        addIcon=findViewById(R.id.log_out);
+        addIcon = findViewById(R.id.add_icon);
         headerLable= findViewById(R.id.headerLable);
+        logoutText = findViewById(R.id.logout);
+
         if(userType.equals("2")){
             addIcon.setVisibility(View.GONE);
             headerLable.setText("Application Data");
@@ -81,7 +84,18 @@ public class AdminActivity extends AppCompatActivity {
         }
 
 
+        logoutText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                prefUtil.setUserName("");
+                prefUtil.setPassword("");
+
+                Intent intent=new Intent(getApplicationContext(), LoginPage.class);
+                startActivity(intent);
+                finishAffinity();
+            }
+        });
         addIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
