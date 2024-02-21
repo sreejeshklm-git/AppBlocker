@@ -13,15 +13,20 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.appblockr.MainActivity;
 import com.example.appblockr.R;
+import com.example.appblockr.Schedule;
 import com.example.appblockr.adapter.AppListAdapter;
 
 import com.example.appblockr.model.AppData;
 import com.example.appblockr.model.AppModel;
 import com.example.appblockr.model.ApplicationListModel;
 import com.example.appblockr.shared.SharedPrefUtil;
+import com.example.appblockr.ui.stats.UsesStatsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -72,7 +77,22 @@ public class AppListActivity extends AppCompatActivity implements AppListAdapter
 //        getInstalledApps();
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.schedule_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.statsButton) {
+            Intent myIntent = new Intent(AppListActivity.this, UsesStatsActivity.class);
+            myIntent.putExtra("email", usersEmail);
+            AppListActivity.this.startActivity(myIntent);
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
     private void validateApps() {
         String appName="";
         if (installedAppsList != null && appsListFromFireDb != null) {

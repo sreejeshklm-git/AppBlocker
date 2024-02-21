@@ -54,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.2"
                 android:text="Duration"
+                android:visibility="gone"
                 android:textColor="@color/black" />
 
             <androidx.appcompat.widget.SwitchCompat
