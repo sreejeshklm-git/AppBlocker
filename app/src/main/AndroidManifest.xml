@@ -26,10 +26,9 @@
         android:theme="@style/Theme.Appsift">
         <activity
             android:name=".ui.stats.UsesStatsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.stats.StatsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat"/>
+
         <activity
             android:name=".ui.adduser.AppListActivity"
             android:exported="false"

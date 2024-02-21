@@ -54,6 +54,8 @@ public class LoginPage extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         android_id = Settings.Secure.getString(this.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+
+        Log.d("##",android_id);
         binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
