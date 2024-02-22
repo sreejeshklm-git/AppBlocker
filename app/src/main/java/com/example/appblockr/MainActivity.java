@@ -537,7 +537,6 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
                     DocumentSnapshot document = task.getResult();
                     try {
                         if (document.exists()) {
-                            updateStashDB();
                             getInstalledApps();
                             getAppListFromDb();
                         } else {
@@ -575,14 +574,14 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         for (int i = 0; i<2; i++) {
             AppUsesData appUsesData = new AppUsesData();
             appUsesData.setAppName("qwer");
-            appUsesData.setDate("12345");
+            appUsesData.setDate(i+"n");
             appUsesData.setDuration("12345");
             appUsesData.setEmail("adafsaf@gmail.com");
             appUsesDataArrayList.add(appUsesData);
         }
 
-        for (int i = 0; i<1; i++) {
-            statsModelArrayList.add(new StatsModel("12/12/2023", appUsesDataArrayList));
+        for (int i = 0; i<2; i++) {
+            statsModelArrayList.add(new StatsModel(i+"", appUsesDataArrayList));
         }
         UsesStatsDataModel statsModel = new UsesStatsDataModel(usersEmail, statsModelArrayList);
         db.collection("app_stats").document(usersEmail).set(statsModel);
