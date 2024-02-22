@@ -6,14 +6,17 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 
+import com.example.appblockr.services.ForegroundService;
 import com.example.appblockr.shared.SharedPrefUtil;
 
 //import gr.net.maroulis.library.EasySplashScreen;
@@ -21,6 +24,7 @@ import com.example.appblockr.shared.SharedPrefUtil;
 public class SplashScreen extends AppCompatActivity {
     Handler handler;
     SharedPrefUtil prefUtil;
+    TextView logText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,7 @@ public class SplashScreen extends AppCompatActivity {
         String password = prefUtil.getPassword("password");
         String userType = prefUtil.getUserType("user_type");
         String email = prefUtil.getEmail("email");
-
+        ContextCompat.startForegroundService(this, new Intent(this, ForegroundService.class));
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -46,12 +50,14 @@ public class SplashScreen extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Login Succesfull", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "Login Succesfull", Toast.LENGTH_SHORT).show();
 //                                        Intent intent = new Intent(getApplicationContext(), AppListActivity.class);
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.putExtra("email", email);
                     startActivity(intent);
+                    finish();
                 }
             }
         }, 3000);

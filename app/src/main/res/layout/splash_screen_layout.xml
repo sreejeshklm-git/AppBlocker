@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@drawable/add_user_gradient"
+    android:background="@drawable/splash_gradient"
     >
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -15,13 +15,14 @@
         android:src="@drawable/locked_icon"/>
 
     <TextView
+        android:id="@+id/logText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/logo_id"
         android:layout_centerHorizontal="true"
-        android:text="App Locker"
+        android:text="@string/color_name"
         android:textStyle="bold"
         android:textSize="40sp"
-        android:textColor="@color/blue"/>
+        android:textColor="#E51635"/>
 
 </RelativeLayout>

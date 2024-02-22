@@ -1,6 +1,5 @@
 package com.example.appblockr;
 
-import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -15,14 +14,12 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -40,7 +37,10 @@ import com.example.appblockr.adapter.AppListAdapter;
 import com.example.appblockr.adapter.LockedAppAdapter;
 import com.example.appblockr.model.AppData;
 import com.example.appblockr.model.AppModel;
+import com.example.appblockr.model.AppUsesData;
 import com.example.appblockr.model.ApplicationListModel;
+import com.example.appblockr.model.StatsModel;
+import com.example.appblockr.model.UsesStatsDataModel;
 import com.example.appblockr.services.BackgroundManager;
 import com.example.appblockr.services.ForegroundService;
 import com.example.appblockr.services.MyAccessibilityService;
@@ -54,7 +54,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     private FirebaseFirestore db;
     private AppListAdapter adapter;
     ArrayList<AppData> appsListFromFireDb;
+    ArrayList<AppUsesData> appUsesDataArrayList;
+    ArrayList<StatsModel> statsModelArrayList;
     ArrayList<AppModel> installedAppsList;
     ArrayList<AppData> commonList;
     ArrayList<String> lockedApps;
@@ -95,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         setContentView(R.layout.activity_main);
         usersEmail = getIntent().getStringExtra("email");
         appsListFromFireDb = new ArrayList<AppData>();
+        appUsesDataArrayList = new ArrayList<AppUsesData>();
+        statsModelArrayList = new ArrayList<StatsModel>();
         installedAppsList = new ArrayList<AppModel>();
         commonList = new ArrayList<AppData>();
         lockedApps = new ArrayList<String>();
@@ -133,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        recyclerView.setAdapter(adapter);
-        updateDocToDB();
+        //updateDocToDB();
 //        showBlockingInfo();
 
 
@@ -251,10 +254,10 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
                 }
 
             } else {
-
                     enableUsageAccess.setVisibility(View.GONE);
                     enableOverlayAccess.setVisibility(View.GONE);
                     toggleEmptyLockListInfo(this);
+                    updateDocToDB();
             }
 
         }
@@ -534,8 +537,9 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
                     DocumentSnapshot document = task.getResult();
                     try {
                         if (document.exists()) {
-                            getAppListFromDb();
+                            updateStashDB();
                             getInstalledApps();
+                            getAppListFromDb();
                         } else {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 updateDB();
@@ -565,6 +569,23 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 //        appsListFromFireDb.get(position).setIsAppLocked(isChecked);
 //        sendAppListToDB(appsListFromFireDb);
         sendAppListToDB(finalList);
+    }
+
+    private void updateStashDB() {
+        for (int i = 0; i<2; i++) {
+            AppUsesData appUsesData = new AppUsesData();
+            appUsesData.setAppName("qwer");
+            appUsesData.setDate("12345");
+            appUsesData.setDuration("12345");
+            appUsesData.setEmail("adafsaf@gmail.com");
+            appUsesDataArrayList.add(appUsesData);
+        }
+
+        for (int i = 0; i<1; i++) {
+            statsModelArrayList.add(new StatsModel("12/12/2023", appUsesDataArrayList));
+        }
+        UsesStatsDataModel statsModel = new UsesStatsDataModel(usersEmail, statsModelArrayList);
+        db.collection("app_stats").document(usersEmail).set(statsModel);
     }
 
 }
