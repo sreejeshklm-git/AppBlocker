@@ -535,6 +535,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
                 }
             }
         });
+    }
 
     @Override
     public void onChecked(boolean isChecked, int position,ArrayList<AppData> finalList) {
