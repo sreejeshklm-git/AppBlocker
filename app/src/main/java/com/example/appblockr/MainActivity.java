@@ -68,19 +68,20 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     List<AppModel> allInstalledApps = new ArrayList<>();
     LockedAppAdapter lockedAppsAdapter = new LockedAppAdapter(lockedAppsList, context);
     RecyclerView recyclerView;
-//    LockedAppAdapter adapter;
+    //    LockedAppAdapter adapter;
     Button setScheduleBtn;
     ProgressDialog progressDialog;
     LinearLayout emptyLockListInfo, blockingInfoLayout;
-    RelativeLayout enableUsageAccess, enableOverlayAccess,accessServiceLayout;
-    TextView btnEnableUsageAccess,btnEnableAS, btnEnableOverlay,blockingScheduleDescription,scheduleMode ;
-    ImageView checkBoxOverlay, checkBoxUsage,checkedASIcon;
+    RelativeLayout enableUsageAccess, enableOverlayAccess, accessServiceLayout;
+    TextView btnEnableUsageAccess, btnEnableAS, btnEnableOverlay, blockingScheduleDescription, scheduleMode;
+    ImageView checkBoxOverlay, checkBoxUsage, checkedASIcon;
 
 
     private String usersEmail;
     private FirebaseFirestore db;
     private AppListAdapter adapter;
     ArrayList<AppData> appsListFromFireDb;
+    ArrayList<AppData> mInstalledApps;
     ArrayList<AppModel> installedAppsList;
     ArrayList<AppData> commonList;
     ArrayList<String> lockedApps;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         setContentView(R.layout.activity_main);
         usersEmail = getIntent().getStringExtra("email");
         appsListFromFireDb = new ArrayList<AppData>();
+        mInstalledApps = new ArrayList<AppData>();
         installedAppsList = new ArrayList<AppModel>();
         commonList = new ArrayList<AppData>();
         lockedApps = new ArrayList<String>();
@@ -103,12 +105,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
         prefUtil = new SharedPrefUtil(getApplicationContext());
 
-      // BackgroundManager.getInstance().init(this).startService();
+        // BackgroundManager.getInstance().init(this).startService();
         //BackgroundManager.getInstance().init(this).startAlarmManager();
         ContextCompat.startForegroundService(this, new Intent(this, ForegroundService.class));
 
         //   BackgroundManager.getInstance().init(this).startService();
-       // BackgroundManager.getInstance().init(this).startAlarmManager();
+        // BackgroundManager.getInstance().init(this).startAlarmManager();
         addIconToBar();
         progressDialog = new ProgressDialog(this);
         emptyLockListInfo = findViewById(R.id.emptyLockListInfo);
@@ -132,25 +134,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         adapter = new AppListAdapter(appsListFromFireDb, getApplicationContext(), MainActivity.this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.setAdapter(adapter);
-        updateDocToDB();
-//        showBlockingInfo();
 
 
-        setScheduleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(MainActivity.this, Schedule.class);
-                MainActivity.this.startActivity(myIntent);
-            }
-        });
-        allAppsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(MainActivity.this, ShowAllApps.class);
-                startActivity(myIntent);
-            }
-        });
+        //we must call getInstalledApps() to compare common apps from Firebase and device application, So Don't comment below li
+        getInstalledApps();
+
+        getAppListFromDb();
 
         final Context context = this;
         getLockedApps(context);
@@ -186,12 +175,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         });
         //toggle permissions box
         togglePermissionBox();
-       // checkAppsFirstTimeLaunch();
+        // checkAppsFirstTimeLaunch();
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void showBlockingInfo(){
+    private void showBlockingInfo() {
         SharedPrefUtil prefUtil = SharedPrefUtil.getInstance(this);
         boolean checkSchedule = prefUtil.getBoolean("confirmSchedule");
         String startTimeHour = prefUtil.getStartTimeHour();
@@ -201,10 +190,10 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         List<String> appsList = prefUtil.getLockedAppsList();
         List<String> days = prefUtil.getDaysList();
         List<String> shortDaysName = new ArrayList<>();
-        days.forEach(day -> shortDaysName.add(day.substring(0,3)));
-        if(appsList.size() > 0){
-            if(checkSchedule){
-                scheduleMode.setText("Every " +String.join(", ", shortDaysName) +" from "+ startTimeHour+":"+startTimeMin+" to "+endTimeHour+":"+endTimeMin);
+        days.forEach(day -> shortDaysName.add(day.substring(0, 3)));
+        if (appsList.size() > 0) {
+            if (checkSchedule) {
+                scheduleMode.setText("Every " + String.join(", ", shortDaysName) + " from " + startTimeHour + ":" + startTimeMin + " to " + endTimeHour + ":" + endTimeMin);
             } else {
                 scheduleMode.setText("Always Blocking");
             }
@@ -252,9 +241,9 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
             } else {
 
-                    enableUsageAccess.setVisibility(View.GONE);
-                    enableOverlayAccess.setVisibility(View.GONE);
-                    toggleEmptyLockListInfo(this);
+                enableUsageAccess.setVisibility(View.GONE);
+                enableOverlayAccess.setVisibility(View.GONE);
+                toggleEmptyLockListInfo(this);
             }
 
         }
@@ -350,6 +339,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
             }
         }
     }
+
     public void ASPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isAccessibilityServiceEnabled()) {
@@ -359,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
             }
         }
     }
+
     private boolean isAccessibilityServiceEnabled() {
         // Check if your accessibility service is enabled
         String service = getPackageName() + "/" + MyAccessibilityService.class.getCanonicalName();
@@ -373,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         }
         return false;
     }
+
     public void overlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
@@ -396,12 +388,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         if (id == R.id.scheduleMenuBtn) {
             Intent myIntent = new Intent(MainActivity.this, Schedule.class);
             MainActivity.this.startActivity(myIntent);
-        }else if(id == R.id.logout_item){
-                prefUtil.setUserName("");
-                prefUtil.setPassword("");
-                Intent intent=new Intent(getApplicationContext(), LoginPage.class);
-                startActivity(intent);
-                finishAffinity();
+        } else if (id == R.id.logout_item) {
+            prefUtil.setUserName("");
+            prefUtil.setPassword("");
+            Intent intent = new Intent(getApplicationContext(), LoginPage.class);
+            startActivity(intent);
+            finishAffinity();
         }
         if (id == R.id.statsButton) {
             Intent myIntent = new Intent(MainActivity.this, UsesStatsActivity.class);
@@ -411,14 +403,15 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
         return super.onOptionsItemSelected(item);
     }
+
     private static void disableAccessibilityService(Context context, Class<?> serviceClass) {
-       ComponentName componentName = new ComponentName(context, serviceClass);
+        ComponentName componentName = new ComponentName(context, serviceClass);
         context.getPackageManager().setComponentEnabledSetting(componentName,
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
     }
 
-    private  void enableAccessibilityService(Context context, Class<?> serviceClass) {
+    private void enableAccessibilityService(Context context, Class<?> serviceClass) {
 
         ComponentName componentName = new ComponentName(context, serviceClass);
         context.getPackageManager().setComponentEnabledSetting(componentName,
@@ -427,8 +420,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
         // Open Accessibility settings to prompt the user to re-enable the service
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-       context.startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
         // MyAccessibilityService.killApp(context, "com.whatsapp");
         // serviceConnection.setMyServiceInfo(this,serviceConnection);
     }
@@ -437,6 +430,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         ApplicationListModel applicationListModel = new ApplicationListModel(usersEmail, appDataList);
         db.collection("apps_list").document(usersEmail).set(applicationListModel);
     }
+
     public void getAppListFromDb() {
         DocumentReference docRef = db.collection("apps_list").document(usersEmail);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -448,14 +442,16 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
                         if (document.exists()) {
                             ApplicationListModel applicationListModel = document.toObject(ApplicationListModel.class);
                             appsListFromFireDb.addAll(applicationListModel.getDataArrayList());
-
                             recyclerView.setAdapter(adapter);
                             validateApps();
-
                         } else {
-                            Toast.makeText(MainActivity.this, "No Apps found", Toast.LENGTH_SHORT).show();
+                            if (prefUtil.getUserType("user_type").equals("2")) {
+                                updateFirebaseDb();
+                            } else {
+                                Toast.makeText(MainActivity.this, "No Apps found", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
@@ -466,28 +462,28 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     }
 
     private void validateApps() {
-        Log.d("$$validateApps:: ","validateApps");
-        Log.d("$$validateApps:: ","appsListFromFireDb:: "+appsListFromFireDb.size());
-        Log.d("$$validateApps:: ","installedAppsList:: "+installedAppsList.size());
+        Log.d("$$validateApps:: ", "validateApps");
+        Log.d("$$validateApps:: ", "appsListFromFireDb:: " + appsListFromFireDb.size());
+        Log.d("$$validateApps:: ", "installedAppsList:: " + installedAppsList.size());
 
-        String appName="";
+        String appName = "";
         if (installedAppsList != null && appsListFromFireDb != null) {
             for (int i = 0; i < installedAppsList.size(); i++) {
                 appName = installedAppsList.get(i).getAppName();
                 for (int j = 0; j < appsListFromFireDb.size(); j++) {
                     if (appsListFromFireDb.get(j).getAppName().equals(appName)) {
                         commonList.add(appsListFromFireDb.get(j));
-                        Log.d("$$validateApps:: ",appsListFromFireDb.get(j).getBundle_id());
+                        Log.d("$$validateApps:: ", appsListFromFireDb.get(j).getBundle_id());
                     }
                 }
             }
         }
 //        List<String> prefLockedAppList = SharedPrefUtil.getInstance(this).getLockedAppsList();
-        Log.d("$$validateApps",""+commonList.size());
-        for (AppData app: commonList) {
+        Log.d("$$validateApps", "" + commonList.size());
+        for (AppData app : commonList) {
             if (app.getIsAppLocked()) {
                 lockedApps.add(app.getBundle_id());
-                Log.d("$$validateApps:: ","LockedApp:: "+app.getBundle_id());
+                Log.d("$$validateApps:: ", "LockedApp:: " + app.getBundle_id());
             }
         }
         SharedPrefUtil.getInstance(MainActivity.this).createLockedAppsList(lockedApps);
@@ -505,7 +501,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
             String name = activityInfo.loadLabel(getPackageManager()).toString();
             Drawable icon = activityInfo.loadIcon(getPackageManager());
             String packageName = activityInfo.packageName;
-            if (!packageName.matches("com.robocora.appsift|com.android.settings")) {
+            if (!packageName.matches("com.robocora.appblockr|com.android.settings")) {
+                mInstalledApps.add(new AppData(name, packageName, usersEmail, "", "0", false));
                 if (!prefLockedAppList.isEmpty()) {
                     //check if apps is locked
                     if (prefLockedAppList.contains(packageName)) {
@@ -525,43 +522,34 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
     }
 
-    private void updateDocToDB() {
-        DocumentReference docRef = db.collection("apps_list").document(usersEmail);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    private void updateFirebaseDb() {
+        ApplicationListModel applicationListModel = new ApplicationListModel(usersEmail, mInstalledApps);
+        DocumentReference ref = db.collection("apps_list").document(usersEmail);
+        ref.set(applicationListModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    try {
-                        if (document.exists()) {
-                            getAppListFromDb();
-                            getInstalledApps();
-                        } else {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                updateDB();
-                            }
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.i("TAG", "get failed with ", task.getException());
+                    getAppListFromDb();
                 }
             }
         });
-    }
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private void updateDB() {
-        appsListFromFireDb = DemoKot.Companion.printCurrentUsageStatus(getApplicationContext(), appsListFromFireDb, usersEmail);
-        ApplicationListModel applicationListModel = new ApplicationListModel(usersEmail, appsListFromFireDb);
-        db.collection("apps_list").document(usersEmail).set(applicationListModel);
-        adapter = new AppListAdapter(appsListFromFireDb, getApplicationContext(), this);
-        recyclerView.setAdapter(adapter);
+
+
+        /*if (task.isSuccessful()) {
+            DocumentSnapshot snapshot = task.getResult();
+            if (snapshot.exists()) {
+                ApplicationListModel applicationListModel = snapshot.toObject(ApplicationListModel.class);
+                appsListFromFireDb.addAll(applicationListModel.getDataArrayList());
+
+                recyclerView.setAdapter(adapter);
+            }
+        }*/
+
     }
 
     @Override
-    public void onChecked(boolean isChecked, int position,ArrayList<AppData> finalList) {
-        Log.d("$$onChecked is:: ",isChecked+" pos:: "+position);
+    public void onChecked(boolean isChecked, int position, ArrayList<AppData> finalList) {
+        Log.d("$$onChecked is:: ", isChecked + " pos:: " + position);
 //        appsListFromFireDb.get(position).setIsAppLocked(isChecked);
 //        sendAppListToDB(appsListFromFireDb);
         sendAppListToDB(finalList);

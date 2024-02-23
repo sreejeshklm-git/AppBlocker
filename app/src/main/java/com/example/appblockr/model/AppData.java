@@ -8,6 +8,17 @@ package com.example.appblockr.model;
      private String clicksCount;
      private  boolean isAppLocked;
 
+     public AppData(){}
+
+     public AppData(String appName, String bundle_id, String email, String duration, String clicksCount, boolean isAppLocked){
+         this.appName = appName;
+         this.bundle_id = bundle_id;
+         this.email = email;
+         this.duration=duration;
+         this.clicksCount = clicksCount;
+         this.isAppLocked = isAppLocked;
+     }
+
      public String getAppName() {
          return appName;
      }

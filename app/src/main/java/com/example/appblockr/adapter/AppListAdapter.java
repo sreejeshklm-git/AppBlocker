@@ -33,6 +33,11 @@ public class AppListAdapter extends
 
     private ToggleCheckedListener toggleCheckedListener;
 
+    public AppListAdapter(ArrayList<AppData> contacts, Context context){
+        this.appData = contacts;
+        this.context = context;
+    }
+
     // Pass in the contact array into the constructor
     public AppListAdapter(ArrayList<AppData> contacts, Context context, ToggleCheckedListener toggleCheckedListener) {
         this.appData = contacts;

@@ -80,7 +80,7 @@ class DemoKot {
         @RequiresApi(Build.VERSION_CODES.Q)
         fun printCurrentUsageStatus(
             context: Context,
-            appDataList: java.util.ArrayList<AppData>,
+            appDataList: ArrayList<AppData>,
             usersEmail: String
         ): java.util.ArrayList<AppData> {
             var list = ArrayList<AppData>()

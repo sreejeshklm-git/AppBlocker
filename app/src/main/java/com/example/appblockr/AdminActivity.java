@@ -4,22 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.appblockr.adapter.AdminAdapter;
 import com.example.appblockr.adapter.UserAdapter;
 import com.example.appblockr.model.AppData;
@@ -38,10 +33,10 @@ public class AdminActivity extends AppCompatActivity {
     private ArrayList courseNames;
     private Toolbar toolbar;
     private RecyclerView recyclerView;
-    private ImageView addIcon,logoutText;
+    private ImageView addIcon, logoutText;
     private FirebaseFirestore db;
     private TextView headerLable;
-    ArrayList<String> usersList,emailList;
+    ArrayList<String> usersList, emailList;
     ArrayList<AppData> appDataList;
 
     SharedPrefUtil prefUtil;
@@ -58,28 +53,26 @@ public class AdminActivity extends AppCompatActivity {
             this.getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple_200));
         }*/
         db = FirebaseFirestore.getInstance();
-        usersList= new ArrayList<String>();
-        emailList= new ArrayList<String>();
-        appDataList= new ArrayList<AppData>();
+        usersList = new ArrayList<String>();
+        emailList = new ArrayList<String>();
+        appDataList = new ArrayList<AppData>();
         prefUtil = new SharedPrefUtil(getApplicationContext());
-         String userType= prefUtil.getUserType("user_type");
+        String userType = prefUtil.getUserType("user_type");
 
         //toolbar=findViewById(R.id.toolbar);
-        recyclerView=findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         addIcon = findViewById(R.id.add_icon);
-        headerLable= findViewById(R.id.headerLable);
+        headerLable = findViewById(R.id.headerLable);
         logoutText = findViewById(R.id.logout);
 
-        if(userType.equals("2")){
+        if (userType.equals("2")) {
             addIcon.setVisibility(View.GONE);
             headerLable.setText("Application Data");
         }
-        if(userType.equals("2")){
-//            UserAdapter userAdapter=new UserAdapter(getApplicationContext());
-//            recyclerView.setAdapter(userAdapter);
-            readDBApp();
+        if (userType.equals("2")) {
+            fetchUserAppsFromFirebaseDb();
         } else if (userType.equals("1")) {
-            readDBUsers();
+            fetchUsersFromFirebaseDb();
             headerLable.setText("Admin Dashboard");
         }
 
@@ -91,7 +84,7 @@ public class AdminActivity extends AppCompatActivity {
                 prefUtil.setUserName("");
                 prefUtil.setPassword("");
 
-                Intent intent=new Intent(getApplicationContext(), LoginPage.class);
+                Intent intent = new Intent(getApplicationContext(), LoginPage.class);
                 startActivity(intent);
                 finishAffinity();
             }
@@ -99,7 +92,7 @@ public class AdminActivity extends AppCompatActivity {
         addIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getApplicationContext(), AdduserActivity.class);
+                Intent intent = new Intent(getApplicationContext(), AdduserActivity.class);
                 startActivity(intent);
             }
         });
@@ -111,7 +104,8 @@ public class AdminActivity extends AppCompatActivity {
                 DividerItemDecoration.VERTICAL));
 
     }
-    public void readDBUsers(){
+
+    public void fetchUsersFromFirebaseDb() {
 
         db.collection("add_users")
                 .get()
@@ -121,10 +115,10 @@ public class AdminActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String userNameDb = document.getString("user_name");
-                                String emailListDb= document.getString("email");
+                                String emailListDb = document.getString("email");
                                 usersList.add(userNameDb);
                                 emailList.add(emailListDb);
-                                AdminAdapter adapter = new AdminAdapter(AdminActivity.this,usersList,emailList);
+                                AdminAdapter adapter = new AdminAdapter(AdminActivity.this, usersList, emailList);
                                 recyclerView.setAdapter(adapter);
                                 Log.d("Data", "userData" + " => " + usersList.size());
                             }
@@ -134,7 +128,8 @@ public class AdminActivity extends AppCompatActivity {
                     }
                 });
     }
-    public void readDBApp(){
+
+    public void fetchUserAppsFromFirebaseDb() {
 
         db.collection("apps_list")
                 .get()
@@ -143,14 +138,14 @@ public class AdminActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String appName= document.getString("appName");
-                                String clicksCount= document.getString("clicksCount");
-                                String appDuration= document.getString("duration");
-                                String email= document.getString("email");
-                                String appPackage= document.getString("bundle_id");
-                                boolean appIsLock= document.getBoolean("isAppLocked");
+                                String appName = document.getString("appName");
+                                String clicksCount = document.getString("clicksCount");
+                                String appDuration = document.getString("duration");
+                                String email = document.getString("email");
+                                String appPackage = document.getString("bundle_id");
+                                boolean appIsLock = document.getBoolean("isAppLocked");
 
-                                AppData appData=new AppData();
+                                AppData appData = new AppData();
 
                                 appData.setAppName(appName);
                                 appData.setClicksCount(clicksCount);
@@ -161,9 +156,9 @@ public class AdminActivity extends AppCompatActivity {
 
                                 appDataList.add(appData);
 
-                                UserAdapter userAdapter=new UserAdapter(appDataList);
+                                UserAdapter userAdapter = new UserAdapter(appDataList);
                                 recyclerView.setAdapter(userAdapter);
-                                Log.d("AppData", "userData" + " => " + appData.getAppName()+appData.getDuration()+appData.getIsAppLocked()+appData.getEmail()+appData.getBundle_id()+appData.getClicksCount());
+                                Log.d("AppData", "userData" + " => " + appData.getAppName() + appData.getDuration() + appData.getIsAppLocked() + appData.getEmail() + appData.getBundle_id() + appData.getClicksCount());
                             }
                         } else {
                             Log.w("data", "Error getting documents.", task.getException());
