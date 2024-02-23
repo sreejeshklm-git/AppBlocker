@@ -40,7 +40,10 @@ import com.example.appblockr.adapter.AppListAdapter;
 import com.example.appblockr.adapter.LockedAppAdapter;
 import com.example.appblockr.model.AppData;
 import com.example.appblockr.model.AppModel;
+import com.example.appblockr.model.AppUsesData;
 import com.example.appblockr.model.ApplicationListModel;
+import com.example.appblockr.model.StatsModel;
+import com.example.appblockr.model.UsesStatsDataModel;
 import com.example.appblockr.services.BackgroundManager;
 import com.example.appblockr.services.ForegroundService;
 import com.example.appblockr.services.MyAccessibilityService;
@@ -68,13 +71,13 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     List<AppModel> allInstalledApps = new ArrayList<>();
     LockedAppAdapter lockedAppsAdapter = new LockedAppAdapter(lockedAppsList, context);
     RecyclerView recyclerView;
-    //    LockedAppAdapter adapter;
+//    LockedAppAdapter adapter;
     Button setScheduleBtn;
     ProgressDialog progressDialog;
     LinearLayout emptyLockListInfo, blockingInfoLayout;
-    RelativeLayout enableUsageAccess, enableOverlayAccess, accessServiceLayout;
-    TextView btnEnableUsageAccess, btnEnableAS, btnEnableOverlay, blockingScheduleDescription, scheduleMode;
-    ImageView checkBoxOverlay, checkBoxUsage, checkedASIcon;
+    RelativeLayout enableUsageAccess, enableOverlayAccess,accessServiceLayout;
+    TextView btnEnableUsageAccess,btnEnableAS, btnEnableOverlay,blockingScheduleDescription,scheduleMode ;
+    ImageView checkBoxOverlay, checkBoxUsage,checkedASIcon;
 
 
     private String usersEmail;
@@ -82,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     private AppListAdapter adapter;
     ArrayList<AppData> appsListFromFireDb;
     ArrayList<AppData> mInstalledApps;
+    ArrayList<AppUsesData> appUsesDataArrayList;
+    ArrayList<StatsModel> statsModelArrayList;
     ArrayList<AppModel> installedAppsList;
     ArrayList<AppData> commonList;
     ArrayList<String> lockedApps;
@@ -96,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         setContentView(R.layout.activity_main);
         usersEmail = getIntent().getStringExtra("email");
         appsListFromFireDb = new ArrayList<AppData>();
+        appUsesDataArrayList = new ArrayList<AppUsesData>();
+        statsModelArrayList = new ArrayList<StatsModel>();
         mInstalledApps = new ArrayList<AppData>();
         installedAppsList = new ArrayList<AppModel>();
         commonList = new ArrayList<AppData>();
@@ -105,12 +112,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
         prefUtil = new SharedPrefUtil(getApplicationContext());
 
-        // BackgroundManager.getInstance().init(this).startService();
+      // BackgroundManager.getInstance().init(this).startService();
         //BackgroundManager.getInstance().init(this).startAlarmManager();
         ContextCompat.startForegroundService(this, new Intent(this, ForegroundService.class));
 
         //   BackgroundManager.getInstance().init(this).startService();
-        // BackgroundManager.getInstance().init(this).startAlarmManager();
+       // BackgroundManager.getInstance().init(this).startAlarmManager();
         addIconToBar();
         progressDialog = new ProgressDialog(this);
         emptyLockListInfo = findViewById(R.id.emptyLockListInfo);
@@ -175,12 +182,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         });
         //toggle permissions box
         togglePermissionBox();
-        // checkAppsFirstTimeLaunch();
+       // checkAppsFirstTimeLaunch();
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void showBlockingInfo() {
+    private void showBlockingInfo(){
         SharedPrefUtil prefUtil = SharedPrefUtil.getInstance(this);
         boolean checkSchedule = prefUtil.getBoolean("confirmSchedule");
         String startTimeHour = prefUtil.getStartTimeHour();
@@ -190,10 +197,10 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         List<String> appsList = prefUtil.getLockedAppsList();
         List<String> days = prefUtil.getDaysList();
         List<String> shortDaysName = new ArrayList<>();
-        days.forEach(day -> shortDaysName.add(day.substring(0, 3)));
-        if (appsList.size() > 0) {
-            if (checkSchedule) {
-                scheduleMode.setText("Every " + String.join(", ", shortDaysName) + " from " + startTimeHour + ":" + startTimeMin + " to " + endTimeHour + ":" + endTimeMin);
+        days.forEach(day -> shortDaysName.add(day.substring(0,3)));
+        if(appsList.size() > 0){
+            if(checkSchedule){
+                scheduleMode.setText("Every " +String.join(", ", shortDaysName) +" from "+ startTimeHour+":"+startTimeMin+" to "+endTimeHour+":"+endTimeMin);
             } else {
                 scheduleMode.setText("Always Blocking");
             }
@@ -241,9 +248,9 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
             } else {
 
-                enableUsageAccess.setVisibility(View.GONE);
-                enableOverlayAccess.setVisibility(View.GONE);
-                toggleEmptyLockListInfo(this);
+                    enableUsageAccess.setVisibility(View.GONE);
+                    enableOverlayAccess.setVisibility(View.GONE);
+                    toggleEmptyLockListInfo(this);
             }
 
         }
@@ -339,7 +346,6 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
             }
         }
     }
-
     public void ASPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isAccessibilityServiceEnabled()) {
@@ -349,7 +355,6 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
             }
         }
     }
-
     private boolean isAccessibilityServiceEnabled() {
         // Check if your accessibility service is enabled
         String service = getPackageName() + "/" + MyAccessibilityService.class.getCanonicalName();
@@ -364,7 +369,6 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         }
         return false;
     }
-
     public void overlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
@@ -388,12 +392,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         if (id == R.id.scheduleMenuBtn) {
             Intent myIntent = new Intent(MainActivity.this, Schedule.class);
             MainActivity.this.startActivity(myIntent);
-        } else if (id == R.id.logout_item) {
-            prefUtil.setUserName("");
-            prefUtil.setPassword("");
-            Intent intent = new Intent(getApplicationContext(), LoginPage.class);
-            startActivity(intent);
-            finishAffinity();
+        }else if(id == R.id.logout_item){
+                prefUtil.setUserName("");
+                prefUtil.setPassword("");
+                Intent intent=new Intent(getApplicationContext(), LoginPage.class);
+                startActivity(intent);
+                finishAffinity();
         }
         if (id == R.id.statsButton) {
             Intent myIntent = new Intent(MainActivity.this, UsesStatsActivity.class);
@@ -403,15 +407,14 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
         return super.onOptionsItemSelected(item);
     }
-
     private static void disableAccessibilityService(Context context, Class<?> serviceClass) {
-        ComponentName componentName = new ComponentName(context, serviceClass);
+       ComponentName componentName = new ComponentName(context, serviceClass);
         context.getPackageManager().setComponentEnabledSetting(componentName,
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
     }
 
-    private void enableAccessibilityService(Context context, Class<?> serviceClass) {
+    private  void enableAccessibilityService(Context context, Class<?> serviceClass) {
 
         ComponentName componentName = new ComponentName(context, serviceClass);
         context.getPackageManager().setComponentEnabledSetting(componentName,
@@ -420,8 +423,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
         // Open Accessibility settings to prompt the user to re-enable the service
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+       context.startActivity(intent);
         // MyAccessibilityService.killApp(context, "com.whatsapp");
         // serviceConnection.setMyServiceInfo(this,serviceConnection);
     }
@@ -430,7 +433,6 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         ApplicationListModel applicationListModel = new ApplicationListModel(usersEmail, appDataList);
         db.collection("apps_list").document(usersEmail).set(applicationListModel);
     }
-
     public void getAppListFromDb() {
         DocumentReference docRef = db.collection("apps_list").document(usersEmail);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -479,11 +481,11 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
             }
         }
 //        List<String> prefLockedAppList = SharedPrefUtil.getInstance(this).getLockedAppsList();
-        Log.d("$$validateApps", "" + commonList.size());
-        for (AppData app : commonList) {
+        Log.d("$$validateApps",""+commonList.size());
+        for (AppData app: commonList) {
             if (app.getIsAppLocked()) {
                 lockedApps.add(app.getBundle_id());
-                Log.d("$$validateApps:: ", "LockedApp:: " + app.getBundle_id());
+                Log.d("$$validateApps:: ","LockedApp:: "+app.getBundle_id());
             }
         }
         SharedPrefUtil.getInstance(MainActivity.this).createLockedAppsList(lockedApps);
@@ -534,25 +536,29 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
             }
         });
 
-
-        /*if (task.isSuccessful()) {
-            DocumentSnapshot snapshot = task.getResult();
-            if (snapshot.exists()) {
-                ApplicationListModel applicationListModel = snapshot.toObject(ApplicationListModel.class);
-                appsListFromFireDb.addAll(applicationListModel.getDataArrayList());
-
-                recyclerView.setAdapter(adapter);
-            }
-        }*/
-
-    }
-
     @Override
-    public void onChecked(boolean isChecked, int position, ArrayList<AppData> finalList) {
-        Log.d("$$onChecked is:: ", isChecked + " pos:: " + position);
+    public void onChecked(boolean isChecked, int position,ArrayList<AppData> finalList) {
+        Log.d("$$onChecked is:: ",isChecked+" pos:: "+position);
 //        appsListFromFireDb.get(position).setIsAppLocked(isChecked);
 //        sendAppListToDB(appsListFromFireDb);
         sendAppListToDB(finalList);
+    }
+
+    private void updateStashDB() {
+        for (int i = 0; i<2; i++) {
+            AppUsesData appUsesData = new AppUsesData();
+            appUsesData.setAppName("qwer");
+            appUsesData.setDate(i+"n");
+            appUsesData.setDuration("12345");
+            appUsesData.setEmail("adafsaf@gmail.com");
+            appUsesDataArrayList.add(appUsesData);
+        }
+
+        for (int i = 0; i<2; i++) {
+            statsModelArrayList.add(new StatsModel(i+"", appUsesDataArrayList));
+        }
+        UsesStatsDataModel statsModel = new UsesStatsDataModel(usersEmail, statsModelArrayList);
+        db.collection("app_stats").document(usersEmail).set(statsModel);
     }
 
 }
