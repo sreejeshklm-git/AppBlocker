@@ -2,6 +2,7 @@ package com.example.appblockr.shared;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.appblockr.model.BlockProfile;
 
@@ -12,6 +13,10 @@ public class SharedPrefUtil {
     private static final String SHARED_APP_PREFERENCE_NAME = "SharedPref";
     Context cxt;
     private final String EXTRA_LAST_APP = "EXTRA_LAST_APP";
+    private final String USER_TYPE= "user_type";
+    private final String USER_NAME= "userName";
+    private final String PASSWORD= "password";
+    private final String EMAIL = "email";
     private final SharedPreferences pref;
     private SharedPreferences.Editor mEditor;
     BlockProfile blockProfile;
@@ -136,4 +141,40 @@ public class SharedPrefUtil {
         return getString("end_minute");
     }
 
+    public void putUserType(String key, String value) {
+        pref.edit().putString(key, value).apply();
+    }
+    public String getUserType(String userType) {
+        return getString(userType);
+    }
+    public void setUserType(String userType) {
+        putUserType(USER_TYPE, userType);
+    }
+    public void putUserName(String key, String value) {
+        pref.edit().putString(key, value).apply();
+    }
+    public String getUserName(String userName){
+        return getString(userName);
+    }
+    public void setUserName(String userName) {
+        putUserName(USER_NAME, userName);
+    }
+    public void putPassword(String key, String value) {
+        pref.edit().putString(key, value).apply();
+    }
+    public String getPassword(String password){
+        return getString(password);
+    }
+    public void setPassword(String password) {
+        putPassword(PASSWORD, password);
+    }
+    public void putEmail(String key, String value) {
+        pref.edit().putString(key, value).apply();
+    }
+    public String getEmail(String email){
+        return getString(email);
+    }
+    public void setEmail(String email) {
+        putEmail(EMAIL, email);
+    }
 }

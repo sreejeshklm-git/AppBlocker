@@ -19,35 +19,41 @@ public class ServiceApplockJobIntent extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         runApplock();
+
+
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Log.e("task ","Removed");
-        BackgroundManager.getInstance().init(this).startService();
-        BackgroundManager.getInstance().init(this).startAlarmManager();
         super.onTaskRemoved(rootIntent);
+        Log.e("task ","Removed");
+
+        BackgroundManager.getInstance().init(this).startService();
+       // BackgroundManager.getInstance().init(this).startAlarmManager();
+
     }
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         Log.e("task ","Destroyed");
         BackgroundManager.getInstance().init(this).startService();
-        BackgroundManager.getInstance().init(this).startAlarmManager();
-        super.onDestroy();
+        Log.e("task ","resterted");
+      //  BackgroundManager.getInstance().init(this).startAlarmManager();
+
     }
 
     private void runApplock() {
-        long endTime = System.currentTimeMillis() + 210;
+        long endTime = System.currentTimeMillis() + 1000;
         Log.e("running app lock"," running ");
-        while (System.currentTimeMillis() < endTime) {
+      while (System.currentTimeMillis() < endTime) {
             synchronized (this) {
                 try {
-                    Intent intent = new Intent(this, ReceiverApplock.class);
-                    sendBroadcast(intent);
+                   // Intent intent = new Intent(this, ReceiverApplock.class);
+                   // sendBroadcast(intent);
                     Log.e("broadcast"," running ");
-                    wait(endTime - System.currentTimeMillis());
-                } catch (InterruptedException e) {
+                   // wait(endTime - System.currentTimeMillis());
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
