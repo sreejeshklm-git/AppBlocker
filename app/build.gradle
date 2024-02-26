@@ -65,5 +65,12 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
 
+    //add junit dependencies
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+
+
 
 }
