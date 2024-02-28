@@ -1,6 +1,7 @@
 package com.example.appblockr;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -35,6 +36,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.appblockr.adapter.AppListAdapter;
 import com.example.appblockr.adapter.LockedAppAdapter;
@@ -47,6 +54,7 @@ import com.example.appblockr.model.UsesStatsDataModel;
 import com.example.appblockr.services.BackgroundManager;
 import com.example.appblockr.services.ForegroundService;
 import com.example.appblockr.services.MyAccessibilityService;
+import com.example.appblockr.services.StatsWorkerManager;
 import com.example.appblockr.shared.SharedPrefUtil;
 import com.example.appblockr.ui.stats.UsesStatsActivity;
 import com.example.appblockr.utils.DemoKot;
@@ -60,6 +68,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements AppListAdapter.ToggleCheckedListener {
 
@@ -116,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         //BackgroundManager.getInstance().init(this).startAlarmManager();
         ContextCompat.startForegroundService(this, new Intent(this, ForegroundService.class));
 
+        //Initiate Work Manager for pushing stats
+        initWorker();
         //   BackgroundManager.getInstance().init(this).startService();
        // BackgroundManager.getInstance().init(this).startAlarmManager();
         addIconToBar();
@@ -188,7 +199,6 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showBlockingInfo(){
-        SharedPrefUtil prefUtil = SharedPrefUtil.getInstance(this);
         boolean checkSchedule = prefUtil.getBoolean("confirmSchedule");
         String startTimeHour = prefUtil.getStartTimeHour();
         String startTimeMin = prefUtil.getStartTimeMinute();
@@ -393,11 +403,23 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
             Intent myIntent = new Intent(MainActivity.this, Schedule.class);
             MainActivity.this.startActivity(myIntent);
         }else if(id == R.id.logout_item){
-                prefUtil.setUserName("");
-                prefUtil.setPassword("");
-                Intent intent=new Intent(getApplicationContext(), LoginPage.class);
-                startActivity(intent);
-                finishAffinity();
+            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Logout !")
+                    .setMessage("Are you sure want to Logout")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            prefUtil.setUserName("");
+                                            prefUtil.setPassword("");
+                                            Intent intent=new Intent(getApplicationContext(), LoginPage.class);
+                                            startActivity(intent);
+                                            finishAffinity();
+                                        }
+                                    })
+                    .setCancelable(true)
+                    .create();
+            dialog.show();
+
         }
         if (id == R.id.statsButton) {
             Intent myIntent = new Intent(MainActivity.this, UsesStatsActivity.class);
@@ -548,10 +570,12 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
     private void updateStashDB() {
         for (int i = 0; i<2; i++) {
             AppUsesData appUsesData = new AppUsesData();
-            appUsesData.setAppName("qwer");
-            appUsesData.setDate(i+"n");
-            appUsesData.setDuration("12345");
-            appUsesData.setEmail("adafsaf@gmail.com");
+            appUsesData.setAppName("Google ");
+            appUsesData.setBundle_id("PackageName");
+            appUsesData.setStartTime(11l);
+            appUsesData.setEndTime(10l);
+            appUsesData.setUsageTime(i+"n");
+            appUsesData.setLaunchCount(1+2);
             appUsesDataArrayList.add(appUsesData);
         }
 
@@ -560,6 +584,27 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
         }
         UsesStatsDataModel statsModel = new UsesStatsDataModel(usersEmail, statsModelArrayList);
         db.collection("app_stats").document(usersEmail).set(statsModel);
+    }
+
+    private void initWorker(){
+        Data.Builder builder = new Data.Builder();
+        builder.putString("KEY_USER_EMAIL",usersEmail);
+        Data inputData = builder.build();
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest
+                .Builder(StatsWorkerManager.class,16, TimeUnit.MINUTES)
+                .setInputData(inputData)
+                .setConstraints(constraints)
+                .build();
+
+        WorkManager.getInstance(this)
+                .enqueueUniquePeriodicWork("StatsWork", ExistingPeriodicWorkPolicy.REPLACE,workRequest)
+                .getResult();
+
+
     }
 
 }
