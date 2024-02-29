@@ -595,7 +595,7 @@ public class MainActivity extends AppCompatActivity implements AppListAdapter.To
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build();
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest
-                .Builder(StatsWorkerManager.class,16, TimeUnit.MINUTES)
+                .Builder(StatsWorkerManager.class,24, TimeUnit.HOURS)
                 .setInputData(inputData)
                 .setConstraints(constraints)
                 .build();

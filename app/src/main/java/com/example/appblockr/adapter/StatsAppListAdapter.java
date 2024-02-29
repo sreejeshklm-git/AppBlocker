@@ -2,36 +2,35 @@ package com.example.appblockr.adapter;
 
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appblockr.R;
-import com.example.appblockr.model.AppData;
-import com.example.appblockr.shared.SharedPrefUtil;
+import com.example.appblockr.model.AppUsesData;
 
 import java.util.ArrayList;
 
 public class StatsAppListAdapter extends
         RecyclerView.Adapter<StatsAppListAdapter.ViewHolder> {
 
-    private ArrayList<AppData> appData;
-    SharedPrefUtil prefUtil;
+    private ArrayList<AppUsesData> appUsageList;
     private Context context;
 
 
     // Pass in the contact array into the constructor
-    public StatsAppListAdapter(ArrayList<AppData> contacts, Context context) {
-        this.appData = contacts;
+    public StatsAppListAdapter(ArrayList<AppUsesData> appUsageList, Context context) {
+        this.appUsageList = appUsageList;
         this.context = context;
+    }
+
+    public void addItems(ArrayList<AppUsesData> list){
+        appUsageList.clear();
+        appUsageList.addAll(list);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -44,12 +43,12 @@ public class StatsAppListAdapter extends
 
     @Override
     public void onBindViewHolder(StatsAppListAdapter.ViewHolder holder, int position) {
-        AppData appInfo = appData.get(position);
+        AppUsesData appInfo = appUsageList.get(position);
         holder.appName.setText(appInfo.getAppName());
         holder.appPackage.setText(appInfo.getBundle_id());
-        holder.duration.setText(appInfo.getDuration());
-        holder.clickCount.setText(appInfo.getClicksCount());
-        if (appInfo.getIsAppLocked()) {
+        holder.duration.setText(appInfo.getUsageTime());
+        holder.clickCount.setText(appInfo.getLaunchCount());
+        /*if (appInfo.getIsAppLocked()) {
             Drawable img = context.getResources().getDrawable(R.drawable.baseline_lock_24);
             holder.isLocked.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
             holder.isLocked.setText("Locked");
@@ -57,13 +56,13 @@ public class StatsAppListAdapter extends
             Drawable img = context.getResources().getDrawable(R.drawable.baseline_lock_open_24);
             holder.isLocked.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
             holder.isLocked.setText("Open");;
-        }
+        }*/
     }
 
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return appData.size();
+        return appUsageList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
