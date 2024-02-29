@@ -95,7 +95,7 @@ class StatsWorkerManager(
                     statsDataModel = UsesStatsDataModel(usersEmail,latestStats)
 
                     statsDataModel?.let {
-                        db.collection("app_stats").document(usersEmail).set(it)
+                        db.collection(usersEmail).document(currentDate).set(it)
                     }
 
                 } else {
@@ -119,7 +119,7 @@ class StatsWorkerManager(
                     usageStats.email?.let { Log.d("##StatsFromFirebase", it) }
 
                     usageStats.let {
-                        db.collection("app_stats").document(usersEmail).set(it)
+                        db.collection(usersEmail).document(currentDate).set(it)
                     }
                 }
 
@@ -131,9 +131,10 @@ class StatsWorkerManager(
     }
 
     private suspend fun getStatsFromFirebaseDb(): ArrayList<StatsModel>? {
-
+        val sdf = SimpleDateFormat("dd:MM:yyyy")
+        val currentDate = sdf.format(Date())
         val dayWiseStatsList: ArrayList<StatsModel> = ArrayList()
-        val docRef: DocumentReference = db.collection("app_stats").document(usersEmail);
+        val docRef: DocumentReference = db.collection(usersEmail).document(currentDate);
         docRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result

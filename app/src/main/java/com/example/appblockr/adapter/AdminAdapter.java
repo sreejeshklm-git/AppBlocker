@@ -39,7 +39,12 @@ public class AdminAdapter extends RecyclerView.Adapter<AdminAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // TypeCast Object to int type
-        holder.userName.setText(userName.get(position));
+        if (position==0) {
+            holder.userName.setText(userName.get(position)+ context.getResources().getString(R.string.admin_name));
+        } else {
+            holder.userName.setText(userName.get(position));
+        }
+
         holder.userEmail.setText(emailList.get(position));
         holder.parentView.setOnClickListener(view -> {
                  Intent intent= new Intent(context, AppListActivity.class);

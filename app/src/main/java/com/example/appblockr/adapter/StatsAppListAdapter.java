@@ -1,6 +1,7 @@
 package com.example.appblockr.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,13 +42,14 @@ public class StatsAppListAdapter extends
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(StatsAppListAdapter.ViewHolder holder, int position) {
         AppUsesData appInfo = appUsageList.get(position);
         holder.appName.setText(appInfo.getAppName());
-        holder.appPackage.setText(appInfo.getBundle_id());
+        holder.appPackage.setText(appInfo.getBundle_id().toString());
         holder.duration.setText(appInfo.getUsageTime());
-        holder.clickCount.setText(appInfo.getLaunchCount());
+        holder.clickCount.setText(appInfo.getLaunchCount().toString());
         /*if (appInfo.getIsAppLocked()) {
             Drawable img = context.getResources().getDrawable(R.drawable.baseline_lock_24);
             holder.isLocked.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
